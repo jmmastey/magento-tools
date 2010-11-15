@@ -1,0 +1,59 @@
+#!/usr/bin/env php
+<?php
+//
+// Get magento version
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+
+
+$results    = `ack Mage::dispatchEvent $magento 2>/dev/null | grep -v "app/code/local" | grep -v "downloader/pearlib"`;
+$results    = explode("\n", $results);
+print_error(sprintf("%-100s\t%-4s\t%s\n", "FILE", "LINE", "EVENT"));
+foreach($results as $result) {
+    if(!strlen(trim($result))) { continue; }
+
+    $matches        = array();
+    preg_match("/([^:]+):(\d+):\W+(.*)/", $result, $matches);
+
+    $file           = str_replace($magento, "", $matches[1]);
+    $line           = $matches[2];
+    $event          = $matches[3];
+
+    $eventMatches   = array();
+    if(preg_match("/Mage::dispatchEvent\('(\w+)'\);/", $event, $eventMatches)) {
+        $event      = $eventMatches[1];
+        $matchType  = 1;
+    } else if(preg_match("/Mage::dispatchEvent\('(\w+)',.*/", $event, $eventMatches)) {
+        $event      = $eventMatches[1];
+        $matchType  = 2;
+    } else if(preg_match("/Mage::dispatchEvent\($/", $event)) {
+        $event      = get_next_line_event($file, $line+1, $magento);
+        $matchType  = 3;
+    } else if(preg_match("/Mage::dispatchEvent\(\"?(['\$a-zA-Z._{}\-> ]+).*/", $event, $eventMatches)) {
+        $event      = $eventMatches[1];
+        $matchType  = 4;
+    } else {
+        print "Found unmatcheable event:\n";
+        var_dump($event);exit;
+    }
+
+    printf("%-100s\t%-4s\t%s\n", $file, $line, $event);
+}
+
+function get_next_line_event($file, $line, $magento) {
+    $cnt        = `cat -n $magento/$file | grep -e "^ *$line"`;
+    $cnt        = preg_replace("/^\s*\d*\s*/", "", $cnt);
+    $matches    = array();
+    if(preg_match("/^'?([\$a-z_>. -]*)'?,$/i", $cnt, $matches)) {
+        return $matches[1];
+    } else if(preg_match("/^([\$a-z_>. '\-\(\)]*),$/i", $cnt, $matches)) {
+        return $matches[1];
+    }
+    print "Found unmatcheable event:\n";
+    var_dump($cnt);exit;
+}

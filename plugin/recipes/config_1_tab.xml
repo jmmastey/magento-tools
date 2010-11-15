@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--@file system.xml@-->
+<config>
+  <tabs>
+    <%tabname_lower% translate="label" module="%module_lower%">
+      <label>%tabname%</label>
+      <sort_order>%sort_order%</sort_order>
+    </%tabname_lower%>
+  </tabs>
+</config>

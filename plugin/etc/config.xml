@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+
+	<modules>
+		<%COMPANY%_%PLUGIN%>
+			<version>0.0.1</version>
+		</%COMPANY%_%PLUGIN%>
+	</modules>
+
+</config>

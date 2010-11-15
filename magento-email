@@ -1,0 +1,31 @@
+#!/usr/bin/env php
+<?php
+//
+// List all Magento emails
+//
+// @author 	    Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+require_once("lib/db.php"); 
+
+require_once("$magento/app/Mage.php");
+
+$existing_templates = array();
+$sqlst = "select orig_template_code from core_email_template";
+$res = mysql_query($sqlst);
+if(mysql_num_rows($res)) {
+    while($row = mysql_fetch_array($res)) {
+        $existing_templates[] = $row['orig_template_code'];
+    }
+}
+
+print "\n";
+$email_templates = Mage::app()->getConfig()->getNode("global/template/email");
+foreach($email_templates[0] as $template => $params) {
+    $loaded = in_array($template, $existing_templates)?"loaded":"new";
+    printf("%-50s\t%-6s\t%s\t%-35s\t%s\n", $template, $loaded, $params->type, $params->file, $params->label);
+}
+print "\n";

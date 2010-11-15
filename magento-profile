@@ -1,0 +1,47 @@
+#!/usr/bin/env php
+<?php
+//
+// Update the environment for this Magento installation. Useful for
+// situations where core_config_data may have incorrect environment information.
+//
+// Usage:
+// magento-profile 
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php");
+require_once("lib/db.php");
+
+print "\nStore profiles\n";
+foreach($profiles as $profile => $values) {
+    printf("%-10s\t%s\n", $profile, $values['description']);
+}
+print "\n";
+
+$key = user_array_choice("Select a profile to load for this store", array_keys($profiles));
+$profile = $profiles[$key];
+
+print "Loading site profile for $key.\n";
+
+$query_stack    = array();
+$config_data    = $profile['config'];
+foreach($profile['config'] as $key => $value) {
+    $query_stack[] = "update core_config_data set value='$value' where path='$key'";
+}
+
+
+start_db_transaction();
+try {
+    foreach($query_stack as $query) {
+        $res = mysql_query($query);
+        if(!$res) { throw new Exception(mysql_error()); }
+    }
+    commit_db_transaction();
+} catch(Exception $e) {
+    rollback_db_transaction();
+    print_error("There was an error during the database commit (".$e->getMessage()."). Couldn't load site profile.");
+}
+

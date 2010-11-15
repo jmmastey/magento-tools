@@ -1,0 +1,91 @@
+#!/usr/bin/env php
+<?php
+//
+// Magento Class Creator
+//
+// Creates a new class file w/ appropriately substituted values
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); // load everything
+
+switch($_SERVER['argc']) {
+  case 3:
+    $type       = $_SERVER['argv'][1];
+    $handle     = $_SERVER['argv'][2];
+    $override   = "";
+    $template   = "base";
+    break;  
+  case 4:
+    $type       = $_SERVER['argv'][1];
+    $handle     = $_SERVER['argv'][2];
+    $override   = $_SERVER['argv'][3];    
+    $template   = "base";
+    break;
+  case 5:
+    $type       = $_SERVER['argv'][1];
+    $handle     = $_SERVER['argv'][2];
+    $override   = $_SERVER['argv'][3];
+    $template   = $_SERVER['argv'][4];
+    break;
+  default:
+    print "Usage: magento-class type module/long_model_name [extends_model_name] [template]\n\n";
+    exit;
+}
+
+print "Creating $type for $handle\n";
+
+// get the real override
+if(strlen($override)) {
+  if(file_exists($override)) { $override = file_to_class($override); }
+  else if(preg_match("/[a-zA-Z_\/]*/", $override)) { $override = handle_to_class($override, $type); }
+  $override_handle = class_to_handle($override);
+  print "This $type will be an override for $override\n";
+}
+
+try {
+    list($module, $class) = explode("/", $handle);
+    if(0 == strcmp("-", $module)) {
+        $module = strtolower(current_module("local"));
+        if(!$module) { throw new Exception("You aren't in a local module. Fail"); }
+        $handle = str_replace("-", $module, $handle);
+    }
+
+    $module_path    = module_path($module);
+    print "This $type will be created in module $module_path\n";
+
+    // do all the work
+    $subs           = get_file_substitution_values($handle, $type, $author, $override);
+    $type_upcase    = ucfirst($type);
+    $template       = ucfirst($template);
+
+    // do the rest of the work
+    print "Creating $type file.\n";
+    move_filtered_file( "$support_dir/$type_upcase/$template.php", $subs['output_file'], $subs );
+    print ucfirst($type)." created!\n\n";
+    
+    # create config data as necessary
+    if(user_yesno("Run recipe for {$type}s?")) {
+        print "Running recipe for {$type}s.\n";
+        `magento-config $type $module`;
+    }
+
+    if($override) {
+        $module = strtolower($module);
+        $class = $subs['class'];
+        list($ovv_mod, $ovv_class) = explode("/", $override_handle);
+        $override = "magento-config override $module --classtype={$type}s --rewrite_module_lower=$ovv_mod --rewrite_handle=$ovv_class --rewrite_class=$class";
+        if(user_yesno("Run recipe for override of $override_handle?")) {
+            print "Running recipe for override of $override_handle\n";
+            `$override`;
+        } else {
+            print "to override: \n";
+            print "$override";
+        }
+    }
+} catch( Exception $e ) {
+    print_error("{$e->getMessage()}\n");
+}

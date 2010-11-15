@@ -1,0 +1,72 @@
+#!/usr/bin/env php
+<?php
+//
+// List magento tax classes and interactively allow the 
+// user to modify that list of classes.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+require_once("lib/db.php"); 
+require_once("lib/taxes.php"); 
+
+require_once("$magento/app/Mage.php");
+
+$classes    = tax_classes();
+$vars       = user_action_vars(array("classes" => $classes));
+$actions    = array(
+    "l" => array("name" => "List tax classes", "callback" => "list_tax_classes"),
+    "a" => array("name" => "Add a tax class", "callback" => "add_tax_class"),
+    "d" => array("name" => "Delete a tax class", "callback" => "delete_tax_class"),
+    "w" => array("name" => "Write changes", "callback" => "write_user_action_changes"),
+    "x" => array("name" => "Abandon changes and exit", "callback" => "abandon_user_action_changes"),
+);
+
+print_graph();
+list_tax_classes($vars);
+user_action($actions, $vars);
+
+function list_tax_classes($vars) {
+    print "\nTax Classes:\n";
+    foreach($vars->classes as $type => $classlist) {
+        print "$type:\n";
+        foreach($classlist as $class) {
+            print "\t$class\n";
+        }
+        print "\n";
+    }
+}
+
+function delete_tax_class($vars) {
+    print "\nDeleting an existing tax class.\n";
+
+    $ids = array();
+    foreach($vars->classes as $type => $classes) {
+        print "$type\n";
+        foreach($classes as $id => $name) {
+            $ids[$id] = $type;
+            print "  $id: $name\n";
+        }
+    }
+
+    $choices = array("") + array_keys($ids);
+    $id  = user_array_choice("Select an id to delete or press enter to skip and cancel", $choices); 
+    if(0 == strcmp("", $id)) { return; }
+
+    $type = $ids[$id];
+    $name = $vars->classes[$type][$id];
+    unset($vars->classes[$type][$id]);
+    array_push($vars->query_stack, "delete from tax_class where class_name = '$name' and class_type = '$type' limit 1");
+}
+
+function add_tax_class($vars) {
+    print "\nAdding a new tax class.\n";
+    $type = user_array_choice("Select a tax class type (".implode("/", array_keys($vars->classes))."):", array_keys($vars->classes));
+    $name = user_text("Select a name for the new tax class");
+
+    $vars->classes[$type][rand(5000,9999)] = $name;
+    array_push($vars->query_stack, "insert into tax_class (class_name, class_type) values ('$name', '$type')");
+}

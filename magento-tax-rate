@@ -1,0 +1,62 @@
+#!/usr/bin/env php
+<?php
+//
+// List magento tax rates and interactively allow the 
+// user to modify that list of rates.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+require_once("lib/db.php"); 
+require_once("lib/taxes.php"); 
+
+require_once("$magento/app/Mage.php");
+
+$rates = tax_rates();
+$vars       = user_action_vars(array("rates" => $rates));
+$actions    = array(
+    "l" => array("name" => "List tax rates", "callback" => "list_tax_rates"),
+    "a" => array("name" => "Add a tax rate", "callback" => "add_tax_rate"),
+    "d" => array("name" => "Delete a tax rate", "callback" => "delete_tax_rate"),
+    "w" => array("name" => "Write changes", "callback" => "write_user_action_changes"),
+    "x" => array("name" => "Abandon changes and exit", "callback" => "abandon_user_action_changes"),
+);
+
+print_graph();
+list_tax_rates($vars);
+user_action($actions, $vars);
+
+
+function list_tax_rates($vars) {
+    print "\nRates\n";
+    foreach($vars->rates as $rate => $rate_data) {
+        printf("%-30s\t%s\n", $rate, $rate_data['rate']);
+    }
+}
+
+function add_tax_rate($vars) {
+    print "\nAdding a new tax rate.\n";
+
+    $countries  = directory_countries();
+    $country    = user_array_choice("Select a country for the new tax rate", $countries, "US");
+    $regions    = directory_regions($country);
+    $region     = user_array_choice("Select a region for the new tax rate", array_keys($regions));
+    $postal     = user_text("Select a post-code for the new tax rate", "*", "/^(\*|\d*)$/");
+    $rate       = user_text("Select the new tax rate", "0.00", "/^\d\.\d+$/");
+
+    $code       = "$country-$region-$postal-Rate 1";
+
+    $vars->rates[$code] = array('tax_country_id' => $country, 'tax_region_id' => $region, 'code' => $code, 'rate' => $rate);
+    array_push($vars->query_stack, "insert into tax_calculation_rate (tax_country_id, tax_region_id, tax_postcode, code, rate) values ('$country', '$region', '$postal', '$code', '$rate')");
+}
+
+function delete_tax_rate($vars) {
+    print "\nDeleting an existing tax rate.\n";
+    $code = user_array_choice("Select a tax rate to delete", array_keys($vars->rates));
+
+    unset($vars->rates[$code]);
+    array_push($vars->query_stack, "delete from tax_calculation_rate where code = '$code'");
+}

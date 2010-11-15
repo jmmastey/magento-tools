@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'hpricot'
+require 'open-uri'
+require 'date'
+require 'optparse'
+
+
+options = {}
+optparse = OptionParser.new(:posix) do |opts|
+  opts.banner = "Usage: magento-craigslist-jobs [options]"
+
+  options[:days] = 7
+  opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|
+    options[:days] = days
+  end
+
+  opts.on( '-h', '--help', 'Display this screen' ) do
+    puts opts
+    exit
+  end
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::ParseError => e
+  puts e
+  exit
+end
+
+today   = Date.today
+urlbase = 'http://%s.craigslist.org/search/?areaID=11&subAreaID=&query=magento&catAbb=ggg'
+areas   = [ 'newyork', 'chicago', 'sfbay', 'washingtondc.en', 'losangeles', 'houston', 'denver', 'boston', 'austin' ]
+
+areas.each do |area|
+  doc = Hpricot(open(urlbase % area))
+  ((doc.search('blockquote')[1]).search("p")).each do |line|
+    vals = line.innerHTML.scan(/(.*) - <a href="([^"]*)">([^<]*)<\/a>.*/)
+
+    date = Date.parse(vals[0][0])
+    link = vals[0][1]
+    title = vals[0][2]
+
+    next if (today - date) > options[:days]
+    print "%8s\t%-60s\t%-10s\t%s\n" % [date.strftime("%m/%d"), link, area, title]
+  end
+end

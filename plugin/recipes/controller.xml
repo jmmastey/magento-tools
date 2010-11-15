@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+  <%scope%>
+    <routers>
+      <%module%>
+        <use>%use%</use>
+        <args>
+          <module>%module%</module>
+          <frontName>%frontname%</frontName>
+        </args>
+      </%module%>
+    </routers>
+  </%scope%>
+</config>

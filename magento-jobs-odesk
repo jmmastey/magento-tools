@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+
+require 'rss/1.0'
+require 'rss/2.0'
+require 'date'
+require 'optparse'
+
+
+options = {}
+optparse = OptionParser.new(:posix) do |opts|
+  opts.banner = "Usage: magento-craigslist-jobs [options]"
+
+  options[:days] = 7
+  opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|
+    options[:days] = days
+  end
+
+  opts.on( '-h', '--help', 'Display this screen' ) do
+    puts opts
+    exit
+  end
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::ParseError => e
+  puts e
+  exit
+end
+
+def parse_tokens(description)
+  tokens = {}
+
+  d_plus_tokens = description.split("<br />")
+  d_plus_tokens.each do |token|
+    next unless token.match /<b>([a-z ]*)<\/b>: (.*)/i
+
+    tok_values = token.scan(/<b>([a-z ]*)<\/b>: (.*)/i)[0]
+    tokens[tok_values[0].downcase.to_sym] = tok_values[1]
+  end
+
+  tokens
+end
+
+today   = Date.today
+urlbase = 'http://www.odesk.com/jobs/rss?q=magento'
+
+content = ""
+open(urlbase) do |s| content = s.read end
+rss = RSS::Parser.parse(content, false)
+
+rss.items.reverse.each do |item|
+  date = Date.parse(item.pubDate.to_s)
+  next if date+options[:days] < today
+
+  title = item.title.sub(" - oDesk", "")
+  link = item.link.gsub(/(jobs\/)[^%]*(%[^?]*)?.*/, '\\1\\2')
+  tokens = parse_tokens(item.description)
+  budget = (tokens.has_key? :budget)?tokens[:budget]:""
+
+  print "%8s\t%s\t%s\t%s\n" % [date.strftime("%m/%d"), link, budget, title]
+end

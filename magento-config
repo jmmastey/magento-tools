@@ -1,0 +1,86 @@
+#!/usr/bin/env php
+<?php
+//
+// Add configuration sections to a plugin
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php");
+require_once("lib/xml.php");
+
+switch(count($_SERVER['argv'])) {
+    case 1:
+        print "Usage: magento-config pattern [module] [options]\n\n";
+        print "Available patterns:\n";
+        passthru("ls $support_dir/recipes | sed -e 's/.xml//' -e 's/^/  /' | tr '\n' '  '");
+        print "\n";
+        exit;
+    case 2:
+        $pattern        = $_SERVER['argv'][1];
+        $module         = null;
+        $values         = array();
+        break;
+    case 3:
+        $pattern        = $_SERVER['argv'][1];
+        $module         = $_SERVER['argv'][2];
+        $values         = array();
+        break;
+    default:
+        $pattern        = $_SERVER['argv'][1];
+        $module         = $_SERVER['argv'][2];
+        $args           = $_SERVER['argv'];
+        $values         = parse_opts($_SERVER['argv']);
+        break;
+}
+
+# attempt to auto-detect a module
+if(0 == strcmp("-", $module)) {
+    $module             = current_module("local");
+}
+
+try {
+    $pattern            = $_SERVER['argv'][1];
+    $recipe             = "$support_dir/recipes/$pattern.xml";
+    if(!file_exists($recipe)) {
+        throw new Exception("The recipe for \"$pattern\" doesn't exist. You'll have to try harder than that.");
+    }
+
+    if(!$module) {
+        $plugin_path    = user_module_path("Which plugin should be overridden", null);
+    } else {
+        $plugin_path    = module_path($module);
+    }
+
+    list($pool, $company, $module) = explode("/", $plugin_path);
+    $values['module']       = $module;
+    $values['module_lower'] = strtolower($module);
+    $values['company']      = $company;
+    $values['code_pool']    = $pool;
+    $values['file']         = "config.xml";
+
+    $contents           = file_get_contents($recipe);
+    $xml_values         = get_string_params($contents);
+    $values             = array_merge($values, $xml_values);
+
+    $target             = "$magento/app/code/$plugin_path/etc/{$values['file']}";
+    if(!file_exists($target)) {
+        if(user_yesno("Target file ({$values['file']}) doesn't exist. Create it?")) {
+            move_filtered_file( "$support_dir/etc/{$values['file']}", $target, $values );
+        } else { 
+            throw new Exception("The target file ({$values['file']}) doesn't exist");
+        }
+    }
+    $target_contents    = file_get_contents($target);
+
+    $values             = get_filter_values($contents, $values);
+    $final_contents     = filter_contents($contents, $values);
+    $final_output       = get_xml_output(merge_xml($target_contents, $final_contents));
+    $fp                 = fopen($target, "w");
+    fwrite($fp, $final_output);
+    fclose($fp);
+} catch( Exception $em_all ) {
+    print_error($em_all->getMessage()."\n");
+}

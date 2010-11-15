@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--@file system.xml@-->
+<config>
+  <sections>
+    <%section_lower% translate="label" module="%module_lower%">
+      <label>%section%</label>
+      <tab>%tabname_lower%</tab>
+      <frontend_type>text</frontend_type>
+      <sort_order>%sort_order%</sort_order>
+      <show_in_default>%show_in_default%</show_in_default>
+      <show_in_website>%show_in_website%</show_in_website>
+      <show_in_store>%show_in_store%</show_in_store>
+    </%section_lower%>
+  </sections>
+</config>

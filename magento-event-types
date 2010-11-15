@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+//
+// Get magento version
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+
+
+$results    = explode("\n", `ack "protected ._eventPrefix " $magento 2>/dev/null | sed -e "s/\s*protected \\\$_eventPrefix\s*= '\(\w*\)';/\\1/"`);
+print_error(sprintf("%-100s\t%-4s\t%s\n", "FILE", "LINE", "TYPE"));
+foreach($results as $result) {
+    if(!strlen(trim($result)) || false !== strpos($result, "//")) { continue; }
+
+    $result = str_replace($magento, "", $result);
+
+    list($file, $line, $type) = explode(":", $result);
+    printf("%-100s\t%-4s\t%s\n", $file, $line, $type);
+}

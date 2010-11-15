@@ -1,0 +1,67 @@
+#!/usr/bin/env php
+<?php
+//
+// Controls the magento cache to turn on/off caching.
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php");
+require_once("lib/db.php"); 
+
+require_once("$magento/app/Mage.php");
+
+$entities   = get_entities();
+$vars       = user_action_vars(array("entities" => $entities));
+$actions    = array(
+    "l" => array("name" => "List users", "callback" => "list_entities"),
+    "t" => array("name" => "Toggle cache", "callback" => "toggle_cache"),
+    "c" => array("name" => "Clear cache", "callback" => "clear_cache"),
+    "w" => array("name" => "Write changes", "callback" => "write_user_action_changes"),
+    "x" => array("name" => "Abandon changes and exit", "callback" => "abandon_user_action_changes"),
+);
+
+list_entities($vars);
+user_action($actions, $vars);
+
+function get_entities() {
+    $sqlst  = "select code, value from core_cache_option";
+    $res    = mysql_query($sqlst) or die(mysql_error());
+    if(!mysql_num_rows($res)) { return array(); }
+
+    $entities  = array();
+    while($row = mysql_fetch_array($res)) {
+        $entities[] = $row;
+    }
+    
+    return $entities;
+}
+
+function list_entities($vars) {
+    print "\nCaches\n";
+    foreach($vars->entities as $entity) {
+        printf("%-20s\t%s\n", $entity['code'], $entity['value']);
+    }
+}
+
+function clear_cache($vars) {
+    print "\nCleaning caches.\n";
+    Mage::app()->cleanCache();
+    print "\nDone.\n";
+}
+
+
+function toggle_cache($vars) {
+    print "\nToggling a cache value.\n";
+    foreach($vars->entities as $idx => $entity) {
+        printf("%s\t%s\n", $idx, $entity['code']);
+
+    }
+    $idx = user_array_choice("Select a cache to toggle", array_keys($vars->entities));
+    $code = $vars->entities[$idx]['code'];
+
+    $vars->entities[$idx]['value'] = (int)!$vars->entities[$idx]['value'];
+    array_push($vars->query_stack, "update core_cache_option set value = !value where code = '$code'");
+}

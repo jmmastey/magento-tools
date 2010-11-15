@@ -1,0 +1,63 @@
+#!/usr/bin/env php
+<?php
+//
+// Magento Controller Creator
+//
+// Creates a new class file w/ appropriately substituted values
+//
+// @author    Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); // load everything
+
+switch($_SERVER['argc']) {
+  case 2:
+    $handle     = $_SERVER['argv'][1];
+    $template   = "base";
+    break;  
+  case 3:
+    $handle     = $_SERVER['argv'][1];
+    $template   = $_SERVER['argv'][2];
+    break;
+  default:
+    print "Usage: magento-controller module/controller_path [template]\n\n";
+    exit;
+}
+
+print "Creating controller for $handle\n";
+
+try {
+    list($module, $class) = explode("/", $handle);
+    $module_path    = module_path($module);
+    print "This controller will be created in module $module_path\n";
+
+    // do all the work
+    $subs     = get_file_substitution_values($handle, "controller", $author, "");
+    $template = ucfirst($template);
+
+    // do the rest of the work
+    print "Creating controller.\n";
+    move_filtered_file("$support_dir/controller/$template.php", $subs['output_file'], $subs);
+    print "controller created!\n\n";
+
+    list($codepool, $company, $plugin_dir) = explode("/", $module_path);
+    switch(strtolower($template)) {
+        case 'admin':
+            $scope  = "admin";
+            $use    = "admin";
+            break;
+        default:
+            $scope  = "frontend";
+            $use    = "standard";
+            break;
+    }
+    print "add route:\n";
+    print "magento-plugin-config controller $module --scope=$scope --module={$company}_{$plugin_dir} --use=$use --frontname=$module\n\n";
+    print "add rewrite:\n";
+    print "magento-plugin-config rewrite $module --module=$module --action=someaction --from_path=path --to_path=path\n";
+
+} catch( Exception $e ) {
+    print_error("{$e->getMessage()}\n");
+}

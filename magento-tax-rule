@@ -1,0 +1,86 @@
+#!/usr/bin/env php
+<?php
+//
+// List magento tax rules and interactively allow the 
+// user to modify that list of rules.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+require_once("lib/db.php"); 
+require_once("lib/taxes.php"); 
+
+require_once("$magento/app/Mage.php");
+
+$rules      = tax_rules();
+$vars       = user_action_vars(array("rules" => $rules));
+$actions    = array(
+    "l" => array("name" => "List tax rule", "callback" => "list_tax_rules"),
+    "a" => array("name" => "Add a tax rule", "callback" => "add_tax_rule"),
+    "d" => array("name" => "Delete a tax rule", "callback" => "delete_tax_rule"),
+    "w" => array("name" => "Write changes", "callback" => "write_user_action_changes"),
+    "x" => array("name" => "Abandon changes and exit", "callback" => "abandon_user_action_changes"),
+);
+
+print_graph();
+list_tax_rules($vars);
+user_action($actions, $vars);
+
+function list_tax_rules($vars) {
+    print "\nTax Rules:\n";
+    $format_string = "  %-5s\t%-50s\t%-10s\t%-10s\t%s\n";
+    printf($format_string, "ID", "CODE", "POSITION", "PRIORITY", "NUM_RULES");
+    foreach($vars->rules as $id => $rule) {
+        printf($format_string, $id, $rule['code'], $rule['position'], $rule['priority'], $rule['num_rules']);
+    }
+}
+
+function delete_tax_rule($vars) {
+    print "\nDeleting an existing tax rule.\n";
+
+    $ids        = array_keys($vars->rules);
+    $choices    = array("") + array_keys($ids);
+    $id         = user_array_choice("Select an id to delete or press enter to skip and cancel", $choices); 
+    if(0 == strcmp("", $id)) { return; }
+
+    $code       = $vars->rules[$id]['code'];
+    unset($vars->rules[$id]);
+    array_push($vars->query_stack, "delete from tax_calculation_rule where code = '$name' limit 1");
+}
+
+function add_tax_class($vars) {
+    print "\nAdding a new tax rule.\n";
+
+    $classes        = tax_classes();
+    $customer_type  = user_array_choice("Select a customer tax class", array_keys($classes['CUSTOMER']));
+    $product_type   = user_array_choice("Select a product tax class", array_keys($classes['PRODUCT']));
+
+    $code           = user_text("Enter a code for the rate rule", null, "/\w*/");
+    $priority       = user_text("Enter a priority for the rate rule", 1, "/^\d+/");
+    $position       = user_text("Enter a position for the rate rule", 1, "/^\d+/");
+
+    $rules          = tax_rules();
+    $used_rules     = array();
+    while(true) {
+        $selection  = user_text("Enter a tax rate code to use w/ this rule or enter 'q' to complete.");
+        if(0 == strcmp("q", $rules[$selection])) {
+            break;
+        } else if(!isset($rules[$selection])) {
+            print "That wasn't a valid rule. Didn't add anything.\n";
+            continue;
+        }
+
+        $used_rules[]   = $selection;
+        print "Using $selection for tax rules.\n";
+    }
+
+    $vars->rules[rand(5000,9999)] = array("code" => $code, "position" => $position, "priority" => $priority, "num_rules" => count($used_rules));
+    array_push($vars->query_stack, "insert into tax_calculation_rule (code, priority, position) VALUES ('$code', $priority, $position)");
+    foreach($used_rules as $rule) {
+        array_push($vars->query_stack, "insert into tax_calculation (tax_calculation_rule_id, customer_tax_class_id, product_tax_class_id)
+                                        (select tax_calculation_rule_id, $customer_type, $product_type from tax_calculation_rule where code = '$code'");
+    }
+}

@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+//
+// Get magento version
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); // load everything
+
+$version = trim(`magento-version`);
+print_error("Local copy: $magento/app/code/core\n");
+print_error("Comparing to $version\n");
+print_error("\n\n");
+
+$clean_dir = "/var/www/magento/$version";
+if(!file_exists($clean_dir)) {
+  print_error("Can't do diff, looking for clean copy: $clean_dir. Go download a clean copy before continuing.\n");
+  exit;
+}
+
+passthru("diff --exclude='.svn' -r $clean_dir/app/code/core $magento/app/code/core");

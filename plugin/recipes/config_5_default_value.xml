@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <default>
+    <%section_lower%>
+      <%group_lower%>
+        <%field_lower%>%default_value%</%field_lower%>
+      </%group_lower%>
+    </%section_lower%>
+  </default>
+</config>

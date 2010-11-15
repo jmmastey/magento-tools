@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config>
+  <global>
+    <rewrite>
+      <%module%_%action%>
+        <from><!--[CDATA[#%from_path%#]]--></from>
+        <to>%to_path%</to>
+      </%module%_%action%>
+    </rewrite>
+  </global>
+</config>

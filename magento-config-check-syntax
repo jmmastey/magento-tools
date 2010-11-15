@@ -1,0 +1,45 @@
+#!/usr/bin/env php
+<?php
+//
+// Check to make sure that all config files for a module are valid XML.
+// Otherwise, Magento will often silently refuse to load them.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php");
+require_once("lib/xml.php");
+
+switch(count($_SERVER['argv'])) {
+    case 2:
+        $module         = $_SERVER['argv'][1];
+        break;
+    default:                                                                                         
+        print "Usage: magento-config-syntax module\n";
+        exit;
+}
+
+# attempt to auto-detect a module
+if(0 == strcmp("-", $module)) {
+    $module             = current_module("local");
+}
+
+try {
+    $module_path    = module_path($module);
+    $files  = `ls $magento/app/code/$module_path/etc`;
+    $files  = explode("\n", $files);
+    foreach($files as $file) {
+        if(!$file) { continue; }
+        print "Checking $file\n";
+        $elem = @simplexml_load_file("$magento/app/code/$module_path/etc/$file");
+        if(!$elem) {
+            throw new Exception("Parser failed while attempting to parse $file!! You suck!");
+        }
+    }
+
+    print "\nAll files seem to be valid XML.\n";
+} catch( Exception $em_all ) {
+    print_error($em_all->getMessage()."\n");
+}

@@ -1,0 +1,90 @@
+#!/usr/bin/env php
+<?php
+//
+// List all Magento emails
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+require_once("lib/db.php"); 
+
+require_once("$magento/app/Mage.php");
+
+$existing_templates = array();
+$sqlst = "select orig_template_code from core_email_template";
+$res = mysql_query($sqlst);
+if(mysql_num_rows($res)) {
+    while($row = mysql_fetch_array($res)) {
+        $existing_templates[] = $row['orig_template_code'];
+    }
+}
+
+$email_templates    = Mage::app()->getConfig()->getNode("global/template/email");
+$to_load            = array();
+$templates          = array();
+foreach($email_templates[0] as $template => $params) {
+    if(in_array($template, $existing_templates)) { print "Found loaded template: $template\n"; continue; }
+    $to_load[$template]     = "y";
+    $templates[$template]   = $params;
+}
+
+if(!count($templates)) {
+    print "All email templates are already loaded. Nothing to do.\n";
+    exit;
+}
+
+print "Loading the following templates:\n\t";
+print implode("\n\t", array_keys($to_load))."\n\n";
+verify_choices($to_load, "Load all of the listed templates?");
+
+$replacements   = array(
+    "Demo Store" => "{{var store.getFrontendName()}}",
+    "#bebcb7" => "#bebcb7",
+    "#d9e5ee" => "#d9e5ee",
+    "Monday - Friday, 8am - 5pm PST" => "Monday - Friday, 8am - 5pm PST",
+);
+print "Some Magento templates contain 'Demo Store' data, and should be updated before entry into the database.\n";
+print "\nHere are the default replacement choices for emails:\n";
+foreach($replacements as $key => $value) { printf("%-50s: %s\n", $key, $value); }
+print "\n";
+verify_choices($replacements, "Accept these replacements?");
+print "\n";
+
+foreach($to_load as $template => $load) {
+    if(0 === stripos($load, "n")) { print "Skipping $template\n"; continue; }
+
+    $file           = $templates[$template]->file;
+    $target_file    = "$magento/app/locale/en_US/template/email/$file";
+    if(!file_exists($file)) {
+        print "Couldn't find file template for $template\n";
+        continue;
+    }
+
+    $text           = file_get_contents($target_file);
+    $orig_params    = get_string_params($text);
+    $subject        = (string)$templates[$template]->label;
+    $type           = (0 === strcmp("html", $templates[$template]->type))?2:1;
+
+    $clean_text     = trim(preg_replace(array("/{\*.*?\*}\n?/ism", "/<!--@.*?@-->\n?/ism"), "", $text));
+    $clean_text     = str_replace(array_keys($replacements), array_values($replacements), $clean_text);
+                                               
+    if(!isset($orig_params['subject'])) { $orig_params['subject'] = $text; }
+    if(!isset($orig_params['styles'])) { $orig_params['styles'] = ""; }
+    if(!isset($orig_params['vars'])) { $orig_params['vars'] = "{}"; }
+
+    $templ_obj      = Mage::getModel("core/email_template");
+    $templ_obj->setTemplateSubject($orig_params['subject'])
+        ->setTemplateCode($subject)
+        ->setTemplateText($clean_text)
+        ->setTemplateStyles($orig_params['styles'])
+        ->setModifiedAt(Mage::getSingleton('core/date')->gmtDate())
+        ->setOrigTemplateCode($template)
+        ->setTemplateType($type)
+        ->setOrigTemplateVariables($orig_params['vars']);
+
+    $templ_obj->save();
+    print "Loaded $template into the database.\n";
+}

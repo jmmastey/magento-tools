@@ -1,0 +1,92 @@
+#!/usr/bin/env php
+<?php
+//
+// Go somewhere in the current Magento installation.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+try {
+    require_once("lib/lib.php"); 
+} catch(Exception $e) {
+    require_once("lib/profile.php");
+    print_error("Cannot find Magento. Going to default location\n");
+    print $default_location;
+    exit;
+}
+
+if(2 != $_SERVER['argc']) {
+  print_error("Usage: magento-cd %somepath%\n");
+  print `pwd`;
+  exit;
+}
+
+$target = $_SERVER['argv'][1];
+
+// it's a developer specified shortcut!
+if(isset($cd_paths[$target])) {
+  $path = str_replace(array(
+    "%magento%", "%theme%",
+  ), array(
+    $magento, trim(`magento-theme`)
+  ), $cd_paths[$target]);
+
+  print_error("Zap! Teleported to $target.\n");
+  print "$path";
+  exit;
+}
+
+// it's a module handle!
+try {
+  $target_path = module_path($target);
+  print_error("Whiz! Going to module $target.\n");
+  print "$magento/app/code/$target_path";
+  exit;
+} catch( Exception $e ) {
+  // it wasn't a module name. keep moving.
+}
+
+// it's a company handle!
+try {
+  $target_path  = company_path($target);
+  print_error("Bang! You're at company dir $target.\n");
+  print "$magento/app/code/$target_path";
+  exit;
+} catch( Exception $e ) {
+  // it wasn't a company handle. keep moving.
+}
+
+// it's a model handle!
+try {
+  $target_path  = handle_to_path($target, "model");
+  $filename     = handle_to_file($target, "model");
+  if(!file_exists("$target_path/$filename")) {
+    throw new Exception("It's a fake! Bail!");
+  }
+
+  print_error("Get thee to model $target.\n");
+  print "$target_path";
+  exit;
+} catch( Exception $e ) {
+  // it wasn't a model handle. keep moving.
+}
+
+// it's a block handle!
+try {
+  $target_path  = handle_to_path($target, "block");
+  $filename     = handle_to_file($target, "block");
+  if(!file_exists("$target_path/$filename")) {
+    throw new Exception("It's a fake! Bail!");
+  }
+
+  print_error("Kapow! You're at block $target.\n");
+  print "$target_path";
+  exit;
+} catch( Exception $e ) {
+  // it wasn't a model handle. keep moving.
+}
+
+print_error("Couldn't figure out where $target is. Meditate on uncertainty and try again.\n");
+print `pwd`;

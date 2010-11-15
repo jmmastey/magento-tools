@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+<?php
+//
+// Creates necessary directories for a new plugin, with empty values as appropriate.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); // load everything
+
+print "Magento Module Creator\n\n";
+
+$company    = user_text("What company name should I use for the new plugin?", $company);
+$plugin     = user_text("What is the CamelCase name of the new plugin?");
+$pluginl    = strtolower($plugin); 
+$author     = user_text("How should I attribute the author of the new plugin?", $author);
+$shell      = user_yesno("Copy shell-based install file to target plugin?");
+$code_dir   = "$magento/app/code/local/$company/$plugin";
+
+if(module_exists($plugin)) {
+  die("Plugin already exists, sorry. Aborting.\n");
+}
+
+print "Creating plugin in directory $code_dir...";
+create_path("$code_dir");
+create_path("$code_dir/etc");
+print "Done!\n";
+
+$subs = array(
+  'company' => $company,
+  'plugin'  => $plugin,
+  'pluginl' => $pluginl,
+  'author'  => $author,
+);
+
+print "Creating necessary files...";
+move_filtered_file("$support_dir/README", "$code_dir/README", $subs);
+move_filtered_file("$support_dir/modules.xml", "$code_dir/{$company}_{$plugin}.xml", $subs);
+move_filtered_file("$support_dir/etc/config.xml", "$code_dir/etc/config.xml", $subs);
+if($shell) {
+    move_filtered_file("$support_dir/install.sh", "$code_dir/install.sh", $subs);
+}
+print "Done!\n";
+
+print "I guess you'll want to read some of those files. Let me adjust file permissions for you.";
+system("find \"$code_dir\" -type d -exec chmod 0755 {} \;");
+system("find \"$code_dir\" -type f -exec chmod 0775 {} \;");
+print "...Done! You'll probably want tighter permissions when you deploy to production.\n";
+print "Finished creating the plugin. Make sure to install it and add it to SVN. Have a nice day! :)\n";

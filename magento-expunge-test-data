@@ -1,0 +1,101 @@
+#!/usr/bin/env php
+<?php
+//
+// Clear all test data from the system.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+require_once("lib/db.php"); 
+
+$sqlsts     = array();
+$purges     = array();
+
+if(user_yesno("Purge sales order / quote data?")) {
+    $purges[]   = "Sales orders";
+    $sqlsts[]   = "delete from sales_order";
+    $sqlsts[]   = "delete from sales_order_entity";
+    $sqlsts[]   = "delete from sales_flat_order_item";
+    $sqlsts[]   = "delete from sales_flat_quote";
+
+    if(user_yesno("Reset order increment?")) {
+        $increment  = user_text("What should sales order increment be reset to", "100000000");
+        $sqlsts[]   = "update eav_entity_store set increment_last_id = '$increment' where entity_type_id = (select entity_type_id from eav_entity_type where entity_type_code = 'order')";
+    }
+}
+
+if(user_yesno("Purge review data?")) {
+    $purges[]   = "Product reviews";
+    $sqlsts[]   = "delete from review";
+    $sqlsts[]   = "delete from review_entity_summary";
+}
+
+if(user_yesno("Purge customer data?")) {
+    $purges[]   = "Customer data";
+    $sqlsts[]   = "delete from customer_entity";
+}
+
+if(user_yesno("Purge newsletter data?")) {
+    print "\n";
+
+    if(user_yesno("Purge newsletter templates?")) {
+        $purges[]   = "Newsletter templates";
+        $sqlsts[]   = "delete from newsletter_template";
+    }
+
+    if(user_yesno("Purge newsletter subscribers?")) {
+        $purges[]   = "Newsletter subscribers";
+        $sqlsts[]   = "delete from newsletter_subscriber";
+    }
+
+    if(user_yesno("Purge newsletter queue?")) {
+        $purges[]   = "Newsletter queue";
+        $sqlsts[]   = "delete from newsletter_queue";
+    }
+
+    print "\n";
+}
+
+if(user_yesno("Purge search data?")) {
+    $purges[]   = "Catalog search data";
+    $sqlsts[]   = "delete from catalogsearch_query";
+}
+
+if(user_yesno("Purge tag data?")) {
+    $purges[]   = "Tag data";
+    $sqlsts[]   = "delete from tag_relation";
+
+    if(user_yesno("Purge all product tags?")) {
+        $purges[]   = "Product tags";
+        $sqlsts[]   = "delete from tag_relation";
+        $sqlsts[]   = "delete from tag_summary";
+    } else {
+        $sqlsts[]   = "update tag_summary set customers = 0, products = 0, uses = 0, historical_uses = 0, popularity = 0";
+    }
+}
+
+print "\nPurges to be completed:\n";
+foreach($purges as $purge) {
+    print "* $purge\n";
+}
+print "\n";
+
+if(!user_yesno("Delete data from the database?")) {
+    exit;
+}
+
+start_db_transaction();
+try {
+    foreach($sqlsts as $sqlst) {
+        $res = mysql_query($sqlst);
+        if(!$res) { throw new Exception(mysql_error()); }
+    }
+    commit_db_transaction();
+    print "Cleared test data.";
+} catch( Exception $e ) {
+    print "Exception detected: ".$e->getMessage();
+    rollback_db_transaction();
+}

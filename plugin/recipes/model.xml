@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <global>
+    <models>
+      <%module_lower%>
+        <class>%company%_%module%_Model</class>
+      </%module_lower%>
+    </models>
+  </global>
+</config>

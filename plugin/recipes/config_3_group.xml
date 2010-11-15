@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--@file system.xml@-->
+<config>
+  <sections>
+    <%section_lower%>
+      <groups>
+        <%group_lower% translate="label">
+          <label>%group%</label>
+          <frontend_type>text</frontend_type>
+          <sort_order>%sort_order%</sort_order>
+          <show_in_default>%show_in_default%</show_in_default>
+          <show_in_website>%show_in_website%</show_in_website>
+          <show_in_store>%show_in_store%</show_in_store> 
+        </%group_lower%>
+      </groups>
+    </%section_lower%>
+  </sections>
+</config>

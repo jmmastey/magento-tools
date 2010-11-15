@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config>
+  <crontab>
+    <jobs>
+      <%cronjob_name%>
+        <schedule>
+          <cron_expr>%frequency%</cron_expr>
+        </schedule>
+        <run>
+          <model>%cron_target%</model>
+        </run>
+      </%cronjob_name%>
+    </jobs>
+  </crontab>
+</config>

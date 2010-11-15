@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--@file adminhtml.xml@-->
+<config>
+  <acl>
+    <resources>
+      <%tabname_lower%>
+        <children>
+          <%section_lower%>
+            <children>
+              <%group_lower% translate="title">
+                <title>Permissions</title>
+                <sort_order>%sort_order%</sort_order>
+              </%group_lower%>
+            </children>
+          </%section_lower%>
+        </children>
+      </%tabname_lower%>
+    </resources>
+  </acl>
+</config>

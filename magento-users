@@ -1,0 +1,86 @@
+#!/usr/bin/env php
+<?php
+//
+// List magento tax rates and interactively allow the 
+// user to modify that list of rates.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+require_once("lib/db.php"); 
+
+require_once("$magento/app/Mage.php");
+
+$users      = get_users();
+$resources  = get_default_resources();
+$vars       = user_action_vars(array("users" => $users, "resources" => $resources));
+$actions    = array(
+    "l" => array("name" => "List users", "callback" => "list_users"),
+    "a" => array("name" => "Add a user", "callback" => "add_user"),
+    "d" => array("name" => "Delete a user", "callback" => "delete_user"),
+    "w" => array("name" => "Write changes", "callback" => "write_user_action_changes"),
+    "x" => array("name" => "Abandon changes and exit", "callback" => "abandon_user_action_changes"),
+);
+
+list_users($vars);
+user_action($actions, $vars);
+
+function get_users() {
+    $sqlst  = "select firstname, lastname, email, username from admin_user";
+    $res    = mysql_query($sqlst) or die(mysql_error());
+    if(!mysql_num_rows($res)) { return array(); }
+
+    $users  = array();
+    while($row = mysql_fetch_array($res)) {
+        $users[$row['username']] = array('firstname' => $row['firstname'], 'lastname' => $row['lastname'], 'email' => $row['email'], 'username' => $row['username']);
+    }
+    
+    return $users;
+}
+
+function get_default_resources() {
+    $sqlst  = "select extra from admin_user order by user_id asc limit 1";
+    $res    = mysql_query($sqlst) or die(mysql_error());
+    $row    = mysql_fetch_array($res);
+
+    return $row['extra'];
+}
+
+function list_users($vars) {
+    print "\nUsers\n";
+    foreach($vars->users as $user => $user_data) {
+        printf("%-20s\t%s (%s)\n", $user_data['firstname']." ".$user_data['lastname'], $user, $user_data['email']);
+    }
+}
+
+function add_user($vars) {
+    print "\nAdding a new user.\n";
+
+    $name       = user_text("Enter name as (first last)", null, "/^[a-zA-Z]+ [a-zA-Z]+$/");
+    list($fname, $lname) = explode(" ", $name);
+    $email      = user_text("Enter an email address for this user");
+    $username   = user_text("Enter username for this user");
+
+    $password   = user_text("Enter the default password for this user");
+    $password   = get_hash($password, 2);
+
+    $lognum     = 0;
+    $reload_acl_flag = 0;
+    $is_active  = 1;
+    $extra      = $vars->resources;
+    
+    $vars->users[$username] = array('firstname' => $fname, 'lastname' => $lname, 'email' => $email, 'username' => $username);
+    array_push($vars->query_stack, "insert into admin_user (firstname, lastname, email, username, password, created, modified, logdate, lognum, reload_acl_flag, is_active, extra) values ('$fname', '$lname', '$email', '$username', '$password', now(), now(), now(), $lognum, $reload_acl_flag, $is_active, '$extra')");
+    array_push($vars->query_stack, "insert into admin_role (parent_id, tree_level, sort_order, role_type, user_id, role_name) values (1, 2, 0, 'U', (select user_id from admin_user where username = '$username'), '$fname')");
+}
+
+function delete_user($vars) {
+    print "\nDeleting an existing user.\n";
+    $code = user_array_choice("Select a user to delete", array_keys($vars->users));
+
+    unset($vars->users[$code]);
+    array_push($vars->query_stack, "delete from admin_user where username = '$code'");
+}

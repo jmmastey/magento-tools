@@ -1,0 +1,41 @@
+mkdir -p media/content/images/cms-images
+mkdir -p webservice/uploads
+rm -f app/etc/use_cache.ser
+mkdir -p var/cache var/report var/locks var/log var/session var/logging
+mkdir -p media/catalog/product
+
+svn revert webservice/.htaccess
+svn revert webservice/.htpasswd
+svn revert app/etc/local.xml
+
+svn add .
+svn add app/etc/local.xml.dist
+svn add media
+svn add media/content
+
+svn mv app/etc/local.xml app/etc/local.xml.dist
+svn mv errors/local.xml errors/local.xml.dist
+
+svn propset svn:ignore "tmp" media
+svn propset svn:ignore "cache" media/catalog/product
+svn propset svn:ignore "staging" .
+svn propset svn:ignore ".thumbs" media/content/images/cms-images
+svn propset svn:ignore "local.xml
+use_cache.ser" app/etc
+svn propset svn:ignore ".htaccess
+.htpasswd" webservice
+svn propset svn:ignore "*" webservice/uploads
+svn propset svn:ignore "report
+cache
+tmp
+import
+export
+backups" var
+svn propset svn:ignore "*" var/locks
+svn propset svn:ignore "*" var/log
+svn propset svn:ignore "*" var/session
+svn propset svn:ignore "*" var/logging
+svn propset svn:ignore "local.xml" errors
+
+
+svn revert var/locks/*

@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+//
+// Get the list of currently installed modules
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php");
+
+if($_SERVER['argc']) {
+    $target_code_pool = $_SERVER['argv'][1];
+}
+
+$results = `find $magento/app/code/*/* -maxdepth 1 -mindepth 1 -type d | grep -v .svn`;
+$results = explode("\n", $results);
+
+$output = array();
+foreach($results as $raw_module) {
+    if(!strlen($raw_module)) { continue; }
+
+    $raw_module = str_replace("$magento/app/code/", "", $raw_module);
+    list($code_pool, $company, $module) = explode("/", $raw_module);
+
+    if(!$code_pool || !$company || !$module) { continue; }
+
+    if(!isset($output[$code_pool])) { $output[$code_pool] = array(); }
+    if(!isset($output[$code_pool][$company])) { $output[$code_pool][$company] = array(); }
+
+    $output[$code_pool][$company][] = $module;
+}
+
+
+foreach($output as $code_pool => $companies) {
+    if($target_code_pool && 0 !== strpos($code_pool, $target_code_pool)) { continue; }
+
+    print "$code_pool:\n";
+    foreach($companies as $company => $modules) {
+        print "\t$company:\n";
+        foreach($modules as $module) {
+            print "\t\t$module\n";
+        }
+    }
+}

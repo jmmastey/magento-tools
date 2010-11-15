@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+//
+// Get magento version
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/lib.php"); 
+
+require_once("$magento/app/Mage.php");
+print Mage::getVersion()."\n";

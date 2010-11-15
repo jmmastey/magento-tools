@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+  <global>
+    <template>
+      <email>
+        <%email_handle%>
+          <label>%label%</label>
+          <file>%file%</file>
+          <type>%type%</type>
+        </%email_handle%>
+      </email>
+    </template>
+  </global>
+</config>

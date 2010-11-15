@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+  <global>
+    <cms>
+      <layouts>
+        <%layout_handle%>
+          <label>%layout_title%</label>
+          <template>%template%</template>
+          <layout_handle>%layout_handle%</layout_handle>
+        </%layout_handle%>
+      </layouts>
+    </cms>
+  </global>
+</config>

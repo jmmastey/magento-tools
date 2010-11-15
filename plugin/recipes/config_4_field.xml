@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--@file system.xml@-->
+<config>
+  <sections>
+    <%section_lower%>
+      <groups>
+        <%group_lower%>
+          <fields>
+            <%field_lower% translate="label">
+              <label>%field%</label>
+              <frontend_type>%frontend_type%</frontend_type>
+              <sort_order>%sort_order%</sort_order>
+              <show_in_default>%show_in_default%</show_in_default>
+              <show_in_website>%show_in_website%</show_in_website>
+              <show_in_store>%show_in_store%</show_in_store> 
+              <comment>%comment%</comment> 
+            </%field_lower%>
+          </fields>
+        </%group_lower%>
+      </groups>
+    </%section_lower%>
+  </sections>
+</config>

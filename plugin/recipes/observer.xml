@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config>
+  <%scope%>
+    <events>
+      <%event%>
+        <observers>
+          <%event_handle%>
+            <type>%type%</type>
+            <class>%class_handle%</class>
+            <method>%method%</method>
+          </%event_handle>
+        </observers>
+      </%event%>
+    </events>
+  </%scope%>
+</config>

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config>
+  <%scope%>
+    <layout>
+      <updates>
+        <%module%>
+          <file>%module%.xml</file>
+        </%module>
+      </updates>
+    </layout>
+  </%scope%>
+</config>

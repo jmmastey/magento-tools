@@ -1,0 +1,10 @@
+# Add the following few lines to bashrc to get useful shortcuts:
+## source bash shortcuts
+# . "$MAGENTO_TOOLS_PATH/lib/bash_shortcuts"
+
+# magento aliases. (don't copy into bashrc)
+function magento-model() { magento-class model "$@"; }
+function magento-block() { magento-class block "$@"; }
+function magento-helper() { magento-class helper "$@"; }
+function mcd { cd $(magento-cd $@); }
+alias mc='magento-config'                         

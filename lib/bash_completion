@@ -1,0 +1,37 @@
+# Magento CD bash completion by Joseph Mastey <joseph.mastey@gmail.com>
+#
+_mcd()
+{
+    local cur words
+    COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    words=`cat "$MAGENTO_TOOLS_PATH/profiles/$MAGENTO_PROFILE.php" | grep "^  '" | sed -e "s/^  '\([a-z-]*\).*/\1/"`
+    COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+    return 0
+}
+complete -F _mcd magento-cd mcd
+
+_mc()
+{
+	  local cur words
+	  COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    words=`ls $MAGENTO_TOOLS_PATH/plugin/recipes | sed -e "s/.xml//"`
+    COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+    return 0
+}
+complete -F _mc magento-config mc
+
+_magento_modules()
+{
+	  local cur words
+	  COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    words='local core community'
+    COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+    return 0
+}
+complete -F _magento_modules magento-modules

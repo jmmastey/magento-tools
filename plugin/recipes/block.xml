@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+  <global>
+    <blocks>
+      <%module_lower%>
+        <class>%company%_%module%_Block</class>
+      </%module_lower%>
+    </blocks>
+  </global>
+</config>

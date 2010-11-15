@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config>
+  <global>
+    <resources>
+      <%module_lower%_setup>
+        <setup>
+          <module>%module%</module>
+          <class>%setup_class%</class>
+        </setup>
+        <connection>
+          <use>%connection%</use>
+        </connection>
+      </%module_lower%_setup>
+    </resources>
+  </global>
+</config>

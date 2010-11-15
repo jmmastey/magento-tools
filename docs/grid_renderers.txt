@@ -1,0 +1,57 @@
+            case 'date':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_date';
+                break;
+            case 'datetime':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_datetime';
+                break;
+            case 'number':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_number';
+                break;
+            case 'currency':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_currency';
+                break;
+            case 'price':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_price';
+                break;
+            case 'country':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_country';
+                break;
+            case 'concat':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_concat';
+                break;
+            case 'action':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_action';
+                break;
+            case 'options':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_options';
+                break;
+            case 'checkbox':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_checkbox';
+                break;
+            case 'massaction':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_massaction';
+                break;
+            case 'radio':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_radio';
+                break;
+            case 'input':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_input';
+                break;
+            case 'select':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_select';
+                break;
+            case 'text':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_longtext';
+                break;
+            case 'store':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_store';
+                break;
+            case 'wrapline':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_wrapline';
+                break;
+            case 'theme':
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_theme';
+                break;
+            default:
+                $rendererClass = 'adminhtml/widget_grid_column_renderer_text';
+                break;

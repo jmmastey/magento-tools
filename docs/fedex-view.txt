@@ -1,0 +1,256 @@
+create or replace view vi_sales_order_shipping as
+select   so.increment_id as 'order_no',
+        (    select xsov.value 
+            from sales_order_varchar xsov 
+            inner join eav_attribute xea on xsov.attribute_id = xea.attribute_id            where    xsov.entity_id = so.entity_id and 
+                    xea.attribute_code = 'customer_email'
+        ) as 'customer_email',
+
+
+
+        /* --- SHIP TO ADDRESS --- */
+
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'firstname'
+        ) as 'shipto_firstname',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'lastname'
+        ) as 'shipto_lastname',
+        concat(
+            (       select xsoev.value 
+                from sales_order_int soi_sa
+                inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+                inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+                inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+                where    so.entity_id = soi_sa.entity_id and
+                        xea.attribute_code = 'firstname'
+            ), ' ', 
+            (       select xsoev.value 
+                from sales_order_int soi_sa
+                inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+                inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+                inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+                where    so.entity_id = soi_sa.entity_id and
+                        xea.attribute_code = 'lastname'
+            )
+        ) as 'shipto_contact_name',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'company'
+        ) as 'shipto_company',
+        (   select substring_index(xsoev.value, char(10), 1 ) 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'street'
+        ) as 'shipto_street_line_1',
+        (   select case when xsoev.value like concat('%', char(10), '%') then substring_index(xsoev.value, char(10), -1 ) else '' end 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and                    xea.attribute_code = 'street'
+        ) as 'shipto_street_line_2',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and                    xea.attribute_code = 'city'
+        ) as 'shipto_city',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and                    xea.attribute_code = 'region'
+        ) as 'shipto_region',
+        (   select     dcr.code
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_int xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            inner join directory_country_region dcr on dcr.region_id = xsoev.value
+            where     so.entity_id = soi_sa.entity_id and xea.attribute_code = 'region_id'
+        ) as 'shipto_region_code',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'postcode'
+        ) as 'shipto_postcode',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'country_id'
+        ) as 'shipto_country_id',
+        (    select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'shipping_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'telephone'
+        ) as 'shipto_telephone',
+
+
+
+        /* --- BILL TO ADDRESS --- */
+
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'firstname'
+        ) as 'billto_firstname',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'lastname'
+        ) as 'billto_lastname',
+        concat(
+            (       select xsoev.value 
+                from sales_order_int soi_sa
+                inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+                inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+                inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+                where    so.entity_id = soi_sa.entity_id and
+                        xea.attribute_code = 'firstname'
+            ), ' ', 
+            (       select xsoev.value 
+                from sales_order_int soi_sa
+                inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+                inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+                inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+                where    so.entity_id = soi_sa.entity_id and
+                        xea.attribute_code = 'lastname'
+            )
+        ) as 'billto_contact_name',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'company'
+        ) as 'billto_company',
+        (   select substring_index(xsoev.value, char(10), 1 ) 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'street'
+        ) as 'billto_street_line_1',
+        (   select case when xsoev.value like concat('%', char(10), '%') then substring_index(xsoev.value, char(10), -1 ) else '' end 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and                    xea.attribute_code = 'street'
+        ) as 'billto_street_line_2',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and                    xea.attribute_code = 'city'
+        ) as 'billto_city',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and                    xea.attribute_code = 'region'
+        ) as 'billto_region',
+        (   select     dcr.code
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_int xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            inner join directory_country_region dcr on dcr.region_id = xsoev.value
+            where     so.entity_id = soi_sa.entity_id and xea.attribute_code = 'region_id'
+        ) as 'billto_region_code',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'postcode'
+        ) as 'billto_postcode',
+        (   select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'country_id'
+        ) as 'billto_country_id',
+        (    select xsoev.value 
+            from sales_order_int soi_sa
+            inner join eav_attribute soi_sa_ea on soi_sa.attribute_id = soi_sa_ea.attribute_id and soi_sa_ea.attribute_code = 'billing_address_id'
+            inner join sales_order_entity_varchar xsoev on xsoev.entity_id = soi_sa.value
+            inner join eav_attribute xea on xsoev.attribute_id = xea.attribute_id
+            where    so.entity_id = soi_sa.entity_id and
+                    xea.attribute_code = 'telephone'
+        ) as 'billto_telephone',
+
+
+
+        /* --- ORDER DETAILS --- */
+
+        (   select xsov.value
+            from sales_order_varchar xsov
+            inner join eav_attribute xea on xsov.attribute_id = xea.attribute_id
+            where xsov.entity_id = so.entity_id and
+                  xea.attribute_code = 'shipping_description'
+        ) as 'order_ship_description',
+ 
+        (   select xsov.value
+            from sales_order_varchar xsov
+            inner join eav_attribute xea on xsov.attribute_id = xea.attribute_id
+            where xsov.entity_id = so.entity_id and
+                  xea.attribute_code = 'shipping_method'
+        ) as 'order_ship_method',
+
+        (   select xsod.value 
+            from sales_order_decimal xsod
+            inner join eav_attribute xea on xsod.attribute_id = xea.attribute_id
+            where    xsod.entity_id = so.entity_id and 
+                    xea.attribute_code = 'weight'
+        ) as 'order_weight',
+        so.subtotal as 'order_subtotal',
+        so.grand_total as 'order_total'
+from sales_order so
+/*where so.increment_id = '100000412';*/
+/*use the above to filter by a specific order number*/
+;
+
+create or replace view vi_sales_order_shipping_2 as select shipto_company, shipto_contact_name, shipto_street_line_1, shipto_street_line_2, shipto_city, shipto_region as shipto_state, shipto_postcode, shipto_country_id, order_weight, order_ship_description, 1 as bill_transportation_to, order_no po_num from vi_sales_order_shipping;
