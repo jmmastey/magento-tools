@@ -1,0 +1,26 @@
+# generates randomized reviews
+#
+# review statuses:
+#   1 approved
+#   2 pending
+#   3 not approved
+#
+
+reviews:
+  entity: review/review
+  base: &reviews_base
+    store_id: fixture_store_id
+    title: fixture_string
+    detail: fixture_lipsum
+    nickname: fixture_string
+    customer_id: ~
+    created_at: fixture_past_date
+    entity_id: fixture_product_entity_id
+    entity_pk_value: fixture_product_id
+    status_id: 1 # approved
+    iterate: 1
+
+  entries:
+    default:
+      <<: *reviews_base
+      iterate: 300

@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+//
+// Clear all test data from the system.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+require_once("lib/fixtures.php"); 
+
+var_dump(get_fixture_data("customers"));

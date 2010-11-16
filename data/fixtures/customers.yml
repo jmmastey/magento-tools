@@ -1,0 +1,69 @@
+# generates default customer / address entries
+
+addresses:
+  entity: customer/address
+  base: &addresses_base
+    city: fixture_string
+    company: fixture_string
+    country_id: fixture_country
+    fax: fixture_phone
+    firstname: fixture_string
+    lastname: fixture_string
+    middlename: ~      
+    postcode: fixture_zip
+    prefix: ~      
+    region: fixture_region
+    region_id: region_id
+    street: fixture_street
+    suffix: ~      
+    telephone: fixture_phone
+    iterate: 1
+
+  entries:
+    default:
+      <<: *addresses_base
+      iterate: 200
+
+    chicago:
+      <<: *addresses_base
+      city: Chicago
+      country_id: US
+      postcode: 60606
+      region: IL
+      
+
+
+customers:
+  entity: customer/customer
+  base: &customers_base
+    confirmation: fixture_string
+    created_at: fixture_past_date
+    created_in: fixture_store_name
+    default_billing: fixture_address
+    default_shipping: fixture_address
+    dob: ~
+    email: fixture_email
+    firstname: fixture_string
+    gender: ~
+    group_id: fixture_group_id
+    lastname: fixture_string
+    middlename: ~
+    password_hash: fixture_password_hash
+    prefix: ~
+    store_id: fixture_store_id
+    suffix: ~
+    taxvat: ~
+    website_id: fixture_website_id
+    iterate: 1
+
+  entries:
+    default:
+      << *customers_base
+      iterate: 500
+
+    testy_mctestington:
+      << *customers_base
+      firstname: Testy
+      lastname: McTestington
+      default_billing: chicago
+      default_shipping: chicago

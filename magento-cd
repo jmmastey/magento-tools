@@ -9,6 +9,7 @@
 // @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
 require_once("lib/base.php"); 
+require_once("$support_dir/cd-paths.php"); 
 
 if(2 != $_SERVER['argc']) {
   print_error("Usage: magento-cd %somepath%\n");
