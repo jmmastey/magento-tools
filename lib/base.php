@@ -13,9 +13,9 @@ if(!isset($_SERVER['argc'])) {
 	throw new Exception("You don't appear to be on command line. Go away.");
 }
 
-require_once("profile.php");
 require_once(dirname(__FILE__)."/functions.php");
 $support_dir    = dirname(__FILE__)."/../data";
+require_once("$support_dir/defaults.php");
 
 $magento        = "";
 $path           = trim(`pwd`);

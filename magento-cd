@@ -8,14 +8,7 @@
 // @version     $Id$
 // @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
-try {
-    require_once("lib/base.php"); 
-} catch(Exception $e) {
-    require_once("lib/profile.php");
-    print_error("Cannot find Magento. Going to default location\n");
-    print $default_location;
-    exit;
-}
+require_once("lib/base.php"); 
 
 if(2 != $_SERVER['argc']) {
   print_error("Usage: magento-cd %somepath%\n");

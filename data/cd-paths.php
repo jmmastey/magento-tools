@@ -1,9 +1,5 @@
 <?php
 
-$email              = "joseph.mastey@gmail.com";
-$author             = "Joseph Mastey <$email>";
-$company            = "MM";
-$default_location   = "/var/www/psb";
 $cd_paths           = array(
   'app'         => '%magento%/app',
   'local'       => '%magento%/app/code/local',
@@ -40,13 +36,3 @@ $cd_paths           = array(
   'utils'       => '/var/www/utils/magento',
 );
 
-// site profiles, used to load default data into the database for a site
-$profiles           = array(
-  'psb'         => array(
-    'description'   => 'PSBrooklyn.com',
-    'config'        => array(
-      'web/unsecure/base_url' => 'http://psb.transmogrified.com/',
-      'web/secure/base_url'   => 'http://psb.transmogrified.com/',
-    ),
-  ),
-);

@@ -16,13 +16,14 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 
 print "\nStore profiles\n";
-foreach($profiles as $profile => $values) {
-    printf("%-10s\t%s\n", $profile, $values['description']);
+$profiles = explode("\n", `ls $support_dir/profiles`);
+foreach($profiles as $profile) {
+    printf("%-10s\n", $profile);
 }
 print "\n";
 
-$key = user_array_choice("Select a profile to load for this store", array_keys($profiles));
-$profile = $profiles[$key];
+$key = user_array_choice("Select a profile to load for this store", $profiles);
+require_once("$support_dir/profiles/$key");
 
 print "Loading site profile for $key.\n";
 
