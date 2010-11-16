@@ -7,7 +7,7 @@
 // @copyright	Copyright (c) JRM Ventures LLC, 2010-
 //
 
-require_once("lib.php");
+require_once("base.php");
 
 $local_file = "$magento/app/etc/local.xml";
 $app_config = simplexml_load_file($local_file);

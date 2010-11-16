@@ -8,7 +8,7 @@
 // @version   $Id$
 // @copyright	Copyright (c) JRM Ventures LLC, 2010-
 
-require_once("lib/lib.php");
+require_once("lib/base.php");
 
 if($_SERVER['argc']) {
     $target_code_pool = $_SERVER['argv'][1];

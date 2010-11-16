@@ -14,9 +14,9 @@ if(!isset($_SERVER['argc'])) {
 }
 
 require_once("profile.php");
-require_once("$tools_path/lib/functions.php");
-$support_dir    = "$tools_path/$support_dir";
-                                                                      
+require_once(dirname(__FILE__)."/functions.php");
+$support_dir    = dirname(__FILE__)."/../data";
+
 $magento        = "";
 $path           = trim(`pwd`);
 while(false !== strpos($path, "/") && $path != "/") {

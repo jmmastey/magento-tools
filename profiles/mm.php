@@ -4,7 +4,6 @@ $email              = "joseph.mastey@gmail.com";
 $author             = "Joseph Mastey <$email>";
 $company            = "MM";
 $default_location   = "/var/www/psb";
-$support_dir        = "plugin";
 $cd_paths           = array(
   'app'         => '%magento%/app',
   'local'       => '%magento%/app/code/local',

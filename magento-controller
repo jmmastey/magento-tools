@@ -10,7 +10,7 @@
 // @version   $Id$
 // @copyright Copyright (c) JRM Ventures LLC, 2010-
 
-require_once("lib/lib.php"); // load everything
+require_once("lib/base.php"); // load everything
 
 switch($_SERVER['argc']) {
   case 2:

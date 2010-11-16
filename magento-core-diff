@@ -8,7 +8,7 @@
 // @version   $Id$
 // @copyright	Copyright (c) JRM Ventures LLC, 2010-
 
-require_once("lib/lib.php"); // load everything
+require_once("lib/base.php"); // load everything
 
 $version = trim(`magento-version`);
 print_error("Local copy: $magento/app/code/core\n");

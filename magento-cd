@@ -9,7 +9,7 @@
 // @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
 try {
-    require_once("lib/lib.php"); 
+    require_once("lib/base.php"); 
 } catch(Exception $e) {
     require_once("lib/profile.php");
     print_error("Cannot find Magento. Going to default location\n");
