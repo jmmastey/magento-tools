@@ -9,6 +9,289 @@
 // @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
 require_once("lib/base.php"); 
-require_once("lib/fixtures.php"); 
+require_once("lib/yml.php"); 
+require_once("lib/db.php"); 
+init_magento();
 
-var_dump(get_fixture_data("customers"));
+if(2 > $_SERVER['argc']) {
+    print "usage: magento-test-fixture FIXTURE...\n";
+    exit;
+}
+
+// load each fixture
+try {
+    for($i = 1; $i < $_SERVER['argc']; $i++) {
+        $fixture = $_SERVER['argv'][$i];
+        print "loading fixture: $fixture\n";
+        load_fixture($fixture);
+        print "\n";
+    }
+} catch(Exception $e) {
+    print "Fixture import bailed partway through. Likely partial data needs to be expunged.\nException: ".$e->getMessage()."\n";
+    print $e->getTraceAsString();
+}
+
+function load_fixture($fixture_name) {
+    $data = get_fixture_data("$fixture_name");
+    foreach($data as $sec => $sec_data) {
+        print "  starting import for $sec\n";
+
+        $context            = new stdClass();
+        $context->data      = $sec_data;
+        $context->title     = $sec;
+        $context->bases     = load_bases($context);
+
+        foreach($sec_data['entries'] as $ent => $ent_data) {
+            print "    importing $ent\n";
+            $context->entry         = $ent_data;
+            $context->entry_title   = $ent;
+            $context->iterator      = get_iterator($context);
+
+            // perform import
+            $iterator = $context->iterator;
+            $iterator($context);
+        }
+    }
+}
+
+function get_entity($context) {
+    if(!isset($context->data) || !isset($context->data['entity'])) {
+        throw new Exception("Can't get entity data for {$context->title}");
+    }
+
+    $class_handle = $context->data['entity'];
+    return Mage::getModel($class_handle);
+}
+
+// right now it looks like I should be able to ignore the bases themselves.
+// this method is for informational output and as a stub for initialization
+// of features later.
+function load_bases($context) {
+    if(!isset($context->data) || !isset($context->data['bases'])) {
+        return array();
+    }
+
+    foreach($context->data['bases'] as $base => $base_data) {
+        print "    found base '$base'\n";
+    }
+
+    return array();
+}
+
+// get a function callback for the correct iterator
+function get_iterator($context) {
+    if(!isset($context->entry) || !isset($context->entry['iterate'])) {
+        $context->entry['iterate'] = 1;
+    }
+
+    $iterate = $context->entry['iterate'];
+
+    if(is_numeric($iterate)) {
+        return "iterate_numeric";
+    } else if(function_exists("iterate_$iterate")) {
+        return "iterate_$iterate";
+    } else {
+        throw new Exception("Unknown iterator: $iterate");
+    }
+}
+
+function get_fixture_data($type) {
+    global $support_dir;
+
+    if(!file_exists("$support_dir/fixtures/$type.yml")) {
+        throw new Exception("No fixture data found for $type");
+    }
+
+    return sfYaml::load("$support_dir/fixtures/$type.yml");
+}
+
+function iterate_numeric($context) {
+    $ct = $context->entry['iterate'];
+    for($i = 0; $i < $ct; $i++) {
+        save_record($context->entry, $context);
+    }
+}
+
+function save_record(array $entry, $context) {
+    $entry  = $entry + array(); //take an array copy
+    $entity = get_entity($context);
+
+    foreach($entry as $key => $value) {
+        if($value && function_exists($value)) {
+            $entry[$key] = $value($entry, $context);
+        } else if(0 === strpos($value, "fixture_")) {
+            throw new Exception("Please define a mock data method $value for {$context->title}");
+        }
+    }
+
+    $entity->setData($entry);
+    $entity->save();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// FIXTURE HELPER METHODS TO GENERATE DUMMY DATA
+
+function fixture_string($entry, $context) {
+    return get_flw($context).get_flw($context);
+}
+
+function fixture_phone() {
+    return "800-555-1212";
+}
+
+function fixture_country($entry, $context, $return_obj = false) {
+    if(!isset($context->countries)) {
+        $context->countries = array_values(Mage::getModel("directory/country")->getCollection()->getItems());
+    }
+
+    $country = $context->countries[rand(0, count($context->countries)-1)];
+
+    // recurse if we didn't find a country w/ regions
+    if(!count($country->getRegions())) { $country = fixture_country($entry, $context, true); }
+
+    $context->entry_country = $country;
+    return $return_obj? $country : $country->getCountryId();
+}
+
+function fixture_region($entry, $context) {
+    if(!isset($context->entry_country) && !$entry['country_id']) {
+        throw new Exception("Couldn't get country code for entry - cannot find resulting regions.");
+    }
+
+    $country_id = $entry['country_id'];
+
+    if(!isset($context->entry_country)) {
+        $context->entry_country = Mage::getModel("directory/country")->loadByCode($country_id);
+    }
+
+
+    if(!isset($context->regions)) { $context->regions = array(); }
+    if(!isset($context->regions[$country_id])) {
+        $regions = $context->entry_country->getRegions()->getItems();
+        $regionData = array();
+        foreach($regions as $key => $value) {
+            // this array is backwards to make access in fixture_region_id faster
+            $regionData[$value->getName()] = $key;
+        }
+        $context->regions[$country_id] = $regionData;
+    }
+
+    if(!count($context->regions[$country_id])) {
+        return fixture_string($entry, $context);
+    } else {
+        $keys = array_keys($context->regions[$country_id]);
+        shuffle($keys);
+        return array_shift($keys);
+    }
+}
+
+function fixture_region_id($entry, $context) {
+    if(!isset($entry['country_id']) || !isset($entry['region'])) {
+        throw new Exception("Couldn't construct region_id from entity params.");
+    }
+
+    $country = $entry['country_id'];
+    $regions = $context->regions[$country];
+
+    // some countries have no listed regions
+    if(!count($regions) || !isset($regions[$entry['region']])) {
+        return null;
+    }
+
+    return $regions[$entry['region']];
+}
+
+
+function fixture_zip() {
+    return rand(10000, 99999);
+
+}
+
+function fixture_street($entry, $context) {
+    $streets    = rand(1,2);
+    $str        = "";
+    for($i = 0; $i < $streets; $i++) {
+        $str    .= rand(10,99999)." ".fixture_string($entry, $context)."\n";
+    }
+
+    return trim($str);
+}
+
+function fixture_past_date() {
+    return date("Y-m-d h:i:s", strtotime("-".rand(30,365)." days"));
+}
+
+function fixture_store_name() {
+    return Mage::app()->getStore()->getName();
+}
+
+function fixture_store_id() {
+    return Mage::app()->getStore()->getId();
+}
+
+function fixture_website_id() {
+    return Mage::app()->getStore()->getWebsite()->getId();
+}
+
+function fixture_address($entry, $context) {
+    $sqlst = "select entity_id from customer_address_entity order by rand() limit 1";
+    $res = mysql_query($sqlst);
+    if(!$res) {
+        throw new Exception("Couldn't get an address");
+    }
+
+    $row = mysql_fetch_array($res);
+    return $row['entity_id']*1;
+}
+
+function fixture_customer($entry, $context) {
+    $sqlst = "select entity_id from customer_entity order by rand() limit 1";
+    $res = mysql_query($sqlst);
+    if(!$res) {
+        throw new Exception("Couldn't get a customer entity");
+    }
+
+    $row = mysql_fetch_array($res);
+    return $row['entity_id']*1;
+}
+
+function fixture_email($entry, $context) {
+    global $email;
+    list($address, $domain) = explode("@", $email);
+    $postfix = fixture_string($entry, $context);
+
+    return "$address+$postfix@$domain";
+}
+
+function fixture_group_id() {
+    return Mage::getStoreConfig(Mage_Customer_Model_Group::XML_PATH_DEFAULT_ID);
+}
+
+function fixture_password_hash() {
+    return get_hash("password", 2);
+}
+
+function get_flw($context) {
+    if(!isset($context->four_letter_words) || !count($context->four_letter_words)) {
+        $context->four_letter_words = get_four_letter_words();
+    }
+
+    shuffle($context->four_letter_words);
+    return array_shift($context->four_letter_words);
+}
+
+function get_four_letter_words() {
+    global $support_dir;
+    return explode("\n", `cat $support_dir/fourletterwords.txt`);
+}

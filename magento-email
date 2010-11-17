@@ -10,8 +10,7 @@
 
 require_once("lib/base.php"); 
 require_once("lib/db.php"); 
-
-require_once("$magento/app/Mage.php");
+init_magento();
 
 $existing_templates = array();
 $sqlst = "select orig_template_code from core_email_template";

@@ -11,8 +11,7 @@
 
 require_once("lib/base.php"); 
 require_once("lib/db.php"); 
-
-require_once("$magento/app/Mage.php");
+init_magento();
 
 $users      = get_users();
 $resources  = get_default_resources();

@@ -32,3 +32,12 @@ while(false !== strpos($path, "/") && $path != "/") {
 if(!$magento) {
     throw new Exception("There is no Magento to be found. My hands are tied!");
 }
+
+function init_magento($store_code = 'default', $scope_code = 'store') {
+    global $magento;
+
+    chdir("$magento");
+    require_once("$magento/app/Mage.php");
+
+    Mage::app()->init($store_code, $scope_code);
+}

@@ -12,8 +12,7 @@
 require_once("lib/base.php"); 
 require_once("lib/db.php"); 
 require_once("lib/taxes.php"); 
-
-require_once("$magento/app/Mage.php");
+init_magento();
 
 $rates = tax_rates();
 $vars       = user_action_vars(array("rates" => $rates));
@@ -28,7 +27,6 @@ $actions    = array(
 print_graph();
 list_tax_rates($vars);
 user_action($actions, $vars);
-
 
 function list_tax_rates($vars) {
     print "\nRates\n";

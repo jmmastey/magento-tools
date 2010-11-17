@@ -10,8 +10,7 @@
 
 require_once("lib/base.php");
 require_once("lib/db.php"); 
-
-require_once("$magento/app/Mage.php");
+init_magento();
 
 $entities   = get_entities();
 $vars       = user_action_vars(array("entities" => $entities));

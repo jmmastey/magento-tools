@@ -12,8 +12,7 @@
 require_once("lib/base.php"); 
 require_once("lib/db.php"); 
 require_once("lib/taxes.php"); 
-
-require_once("$magento/app/Mage.php");
+init_magento();
 
 $rules      = tax_rules();
 $vars       = user_action_vars(array("rules" => $rules));

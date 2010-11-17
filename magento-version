@@ -9,6 +9,6 @@
 // @copyright	Copyright (c) JRM Ventures LLC, 2010-
 
 require_once("lib/base.php"); 
+init_magento();
 
-require_once("$magento/app/Mage.php");
 print Mage::getVersion()."\n";
