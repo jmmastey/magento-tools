@@ -9,6 +9,8 @@
 
 require_once("base.php");
 
+// don't prompt for DB credentials, just steal them from Magento
+$use_default_connection = true; 
 $local_file = "$magento/app/etc/local.xml";
 $app_config = simplexml_load_file($local_file);
 if(!$app_config) {
