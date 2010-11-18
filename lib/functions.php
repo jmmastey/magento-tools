@@ -89,9 +89,9 @@ function find_path($target, $search, $trim = null, $return_count = false ) {
 
     if($return_count) { return count($res); }
 
-    if(1 != count($res)) {
-        throw new Exception("Couldn't find target dir $target in $search");
-    }
+    //if(1 != count($res)) {
+    //    throw new Exception("Couldn't find target dir $target in $search");
+    //}
 
     $result = str_replace($trim, "", $res[0]);
     return $result;
@@ -183,3 +183,14 @@ function get_hash($string, $salt_digits) {
     return md5($salt.$string).":".$salt;
 
 }                                                                                                                            
+
+function get_edition() {
+    $magento = magento_path();
+    if(file_exists("$magento/LICENSE_EE.txt")) {
+        $edition = "enterprise";
+    } else {
+        $edition = "community";
+    }
+
+    return $edition;
+}

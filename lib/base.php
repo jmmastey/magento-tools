@@ -17,21 +17,8 @@ require_once(dirname(__FILE__)."/functions.php");
 $support_dir    = dirname(__FILE__)."/../data";
 require_once("$support_dir/defaults.php");
 
-$magento        = "";
-$path           = trim(`pwd`);
-while(false !== strpos($path, "/") && $path != "/") {
-    $target         = "$path/LICENSE.txt";
-    if(file_exists($target)) {
-        $magento    = $path;
-        break;
-    }
-
-    $path           = dirname($path);
-}
-
-if(!$magento) {
-    throw new Exception("There is no Magento to be found. My hands are tied!");
-}
+// @throws Exception we're not inside of magento
+$magento        = find_magento();
 
 function init_magento($store_code = 'default', $scope_code = 'store') {
     global $magento;
@@ -40,4 +27,18 @@ function init_magento($store_code = 'default', $scope_code = 'store') {
     require_once("$magento/app/Mage.php");
 
     Mage::app()->init($store_code, $scope_code);
+}
+
+function find_magento() {
+    $path           = trim(`pwd`);
+    while(false !== strpos($path, "/") && $path != "/") {
+        $target         = "$path/LICENSE.txt";
+        if(file_exists($target)) {
+            return $path;
+        }
+
+        $path           = dirname($path);
+    }
+
+    throw new Exception("There is no Magento to be found. My hands are tied!");
 }

@@ -8,8 +8,13 @@
 // @version     $Id$
 // @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
-require_once("lib/base.php"); 
-require_once("$support_dir/cd-paths.php"); 
+try {
+    require_once("lib/base.php"); 
+    require_once("$support_dir/cd-paths.php"); 
+} catch( Exception $e ) {
+    require_once("$support_dir/cd-paths.php"); 
+    $magento = $default_path;
+}
 
 if(2 != $_SERVER['argc']) {
   print_error("Usage: magento-cd %somepath%\n");
@@ -22,9 +27,9 @@ $target = $_SERVER['argv'][1];
 // it's a developer specified shortcut!
 if(isset($cd_paths[$target])) {
   $path = str_replace(array(
-    "%magento%", "%theme%",
+    "%magento%", "%theme%", "%edition%",
   ), array(
-    $magento, trim(`magento-theme`)
+    $magento, trim(`magento-theme`), get_edition(),
   ), $cd_paths[$target]);
 
   print_error("Zap! Teleported to $target.\n");
