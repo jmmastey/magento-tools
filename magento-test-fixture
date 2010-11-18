@@ -112,6 +112,13 @@ function iterate_numeric($context) {
     }
 }
 
+function iterate_numeric_prompt($context) {
+    $num = (int)user_text("    How many entries for $context->entry_title", null, "/^\d+$/");
+    $context->entry['iterate'] = $num;
+    print "\n";
+    iterate_numeric($context);
+}
+
 function save_record(array $entry, $context) {
     $entry  = $entry + array(); //take an array copy
     $entity = get_entity($context);
@@ -147,11 +154,34 @@ function fixture_string($entry, $context) {
 }
 
 function fixture_sentence($entry, $context) {
+    $lipsum = get_lipsum($context);
+    shuffle($lipsum);
 
+    return $lipsum[0];
 }
 
 function fixture_paragraph($entry, $context) {
+    $lipsum = get_lipsum($context);
+    shuffle($lipsum);
 
+    $sentences  = rand(3, 5);
+    $txt        = array();
+    for($i = 0; $i < $sentences; $i++) {
+        $txt[]  = $lipsum[$i];
+    }
+
+    return implode(" ", $txt);
+}
+
+function fixture_page($entry, $context) {
+    $paragraphs = rand(3,6);
+    $txt        = array();
+
+    for($i = 0; $i < $paragraphs; $i++) {
+        $txt[]  = fixture_paragraph($entry, $context);
+    }
+
+    return implode("\n", $txt);
 }
 
 function fixture_phone() {
@@ -301,12 +331,7 @@ function get_flw($context) {
 
 function get_four_letter_words() {
     global $support_dir;
-    return explode("\n", `cat $support_dir/fourletterwords.txt`);
-}
-
-function fixture_product_entity_id() {
-    var_dump(Mage::getModel("catalog/product")->getEntityTypeId());
-    exit;
+    return explode("\n", file_get_contents("$support_dir/fourletterwords.txt"));
 }
 
 function fixture_product_id() {
@@ -318,4 +343,14 @@ function fixture_product_id() {
 
     $row    = mysql_fetch_array($res);
     return $row['entity_id'];
+}
+
+function get_lipsum($context) {
+    global $support_dir;
+
+    if(!isset($context->lipsum_sentences)) {
+        $context->lipsum_sentences = explode("\n", trim(file_get_contents("$support_dir/lipsum.txt")));
+    }
+
+    return $context->lipsum_sentences;
 }
