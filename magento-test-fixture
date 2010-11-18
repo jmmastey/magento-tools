@@ -146,6 +146,14 @@ function fixture_string($entry, $context) {
     return get_flw($context).get_flw($context);
 }
 
+function fixture_sentence($entry, $context) {
+
+}
+
+function fixture_paragraph($entry, $context) {
+
+}
+
 function fixture_phone() {
     return "800-555-1212";
 }
@@ -294,4 +302,20 @@ function get_flw($context) {
 function get_four_letter_words() {
     global $support_dir;
     return explode("\n", `cat $support_dir/fourletterwords.txt`);
+}
+
+function fixture_product_entity_id() {
+    var_dump(Mage::getModel("catalog/product")->getEntityTypeId());
+    exit;
+}
+
+function fixture_product_id() {
+    $sqlst  = "select entity_id from catalog_product_entity order by rand() limit 1";
+    $res    = mysql_query($sqlst);
+    if(!$res) {
+        throw new Exception("Couldn't find a product");
+    }
+
+    $row    = mysql_fetch_array($res);
+    return $row['entity_id'];
 }

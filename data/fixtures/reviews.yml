@@ -10,8 +10,8 @@ reviews:
   entity: review/review
   base: &reviews_base
     store_id: fixture_store_id
-    title: fixture_string
-    detail: fixture_lipsum
+    title: fixture_sentence
+    detail: fixture_paragraph
     nickname: fixture_string
     customer_id: ~
     created_at: fixture_past_date
@@ -21,6 +21,9 @@ reviews:
     iterate: 1
 
   entries:
-    default:
+    userless:
       <<: *reviews_base
       iterate: 300
+    userful:
+      <<: *reviews_base
+      iterate: fixture_customer

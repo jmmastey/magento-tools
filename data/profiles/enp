@@ -1,0 +1,10 @@
+<?php
+
+// site profiles, used to load default data into the database for a site
+$profile           = array(
+  'description'   => 'Eat N\' Park',
+  'config'        => array(
+    'web/unsecure/base_url' => 'http://enp.transmogrified.com/',
+    'web/secure/base_url'   => 'http://enp.transmogrified.com/',
+  ),
+);
