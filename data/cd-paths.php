@@ -19,9 +19,9 @@ $cd_paths           = array(
   'log'         => '%magento%/var/log',
   'report'      => '%magento%/var/report',
 
-  'skin'        => '%magento%/skin/frontend/%edition%/%theme%',
-  'css'         => '%magento%/skin/frontend/%edition%/%theme%/css',
-  'images'      => '%magento%/skin/frontend/%edition%/%theme%/images',
+  'skin'        => '%magento%/skin/frontend/%edition_package%/%theme%',
+  'css'         => '%magento%/skin/frontend/%edition_package%/%theme%/css',
+  'images'      => '%magento%/skin/frontend/%edition_package%/%theme%/images',
 
   'locale'      => '%magento%/app/locale/en_US',
   'email'       => '%magento%/app/locale/en_US/template/email',

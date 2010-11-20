@@ -28,10 +28,16 @@ $target = $_SERVER['argv'][1];
 // it's a developer specified shortcut!
 if(isset($cd_paths[$target])) {
   if(!isset($theme)) { $theme = trim(`magento-theme`); }
+  $edition = get_edition();
+  if(0 == strcmp($edition, "community")) {
+    $package = "default";
+  } else {
+    $package = $edition;
+  }
   $path = str_replace(array(
-    "%magento%", "%theme%", "%edition%",
+    "%magento%", "%theme%", "%edition%", "%edition_package%",
   ), array(
-    $magento, $theme, get_edition(),
+    $magento, $theme, $edition, $package,
   ), $cd_paths[$target]);
 
   print_error("Zap! Teleported to $target.\n");
