@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+//
+// Get magento version
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+init_magento();
+
+$types = array("blocks", "models");
+print "\n\n";
+foreach($types as $type) {
+    $modules = Mage::app()->getConfig()->getNode("global/$type");
+    printf("%60s:\n", ucfirst($type));
+    foreach($modules[0] as $name => $config) {
+        if(!$config->rewrite) { continue; }
+        foreach($config->rewrite[0] as $rewrite => $node) {
+            printf("%60s\t%s\n", "$name/$rewrite", "$node");
+        }
+    }                        
+    print "\n\n";
+}

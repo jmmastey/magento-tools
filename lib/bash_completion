@@ -6,7 +6,7 @@ _mcd()
     COMPREPLY=()
 
     cur="${COMP_WORDS[COMP_CWORD]}"
-    words=`cat "$MAGENTO_TOOLS_PATH/profiles/$MAGENTO_PROFILE.php" | grep "^  '" | sed -e "s/^  '\([a-z-]*\).*/\1/"`
+    words=`cat "$MAGENTO_TOOLS_PATH/data/cd-paths.php" | grep "^  '" | sed -e "s/^  '\([a-z-]*\).*/\1/"`
     COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
     return 0
 }
