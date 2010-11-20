@@ -1,0 +1,28 @@
+#!/usr/bin/env php
+<?php
+//
+// Get magento version
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+require_once("lib/db.php"); 
+
+$schema = $db_config_array['dbname'];
+$tables = array("admin_user", "catalog_category_entity", "catalog_product_entity", "core_store", "customer_entity", "sales_flat_quote", "sales_order", "rating", "review");
+$sqlst  = "select table_name, table_rows, data_length from information_schema.tables where table_schema = '$schema' and table_name in (\"".implode("\", \"", $tables)."\")";
+
+$res    = mysql_query($sqlst);
+if(!$res) {
+    throw new Exception("Failed at life.");
+}
+
+$format_string = "%30s\t%10s\t%10s\n";
+printf($format_string, "TABLE", "ROWS", "DATA");
+while($row = mysql_fetch_array($res)) {
+    $kbytes = $row['data_length']/1024;
+    printf($format_string, $row["table_name"], $row["table_rows"], "{$kbytes}k");
+}
