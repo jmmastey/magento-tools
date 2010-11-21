@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+//
+// Get currently used design.
+// It's possible to use multiple designs, but we're most interested in the template theme.
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php");
+init_magento();
+
+$order = Mage::getModel("sales/order")->load(1);
+var_dump($order->getData());
+$po = Mage::getModel("purchaseorder/purchase_order");
+$po->generatePurchaseOrders();

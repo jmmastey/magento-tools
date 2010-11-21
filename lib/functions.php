@@ -89,11 +89,11 @@ function find_path($target, $search, $trim = null, $return_count = false ) {
 
     if($return_count) { return count($res); }
 
-    //if(1 != count($res)) {
-    //    throw new Exception("Couldn't find target dir $target in $search");
-    //}
+    if(0 == count($res)) {
+        throw new Exception("Couldn't find target dir $target in $search");
+    }
 
-    $result = str_replace($trim, "", $res[0]);
+    $result = str_replace($trim, "", array_shift($res));
     return $result;
 }
 

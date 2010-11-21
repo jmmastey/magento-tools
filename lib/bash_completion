@@ -18,7 +18,7 @@ _mc()
 	  COMPREPLY=()
 
     cur="${COMP_WORDS[COMP_CWORD]}"
-    words=`ls $MAGENTO_TOOLS_PATH/plugin/recipes | sed -e "s/.xml//"`
+    words=`ls $MAGENTO_TOOLS_PATH/data/recipes | sed -e "s/.xml//"`
     COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
     return 0
 }
@@ -35,3 +35,16 @@ _magento_modules()
     return 0
 }
 complete -F _magento_modules magento-modules
+
+_magento_test_fixtures()
+{
+	  local cur words
+	  COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    words=`ls $MAGENTO_TOOLS_PATH/data/fixtures | sed -e "s/.yml//"`
+    COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+    return 0
+
+}
+complete -F _magento_test_fixtures magento-test-fixture

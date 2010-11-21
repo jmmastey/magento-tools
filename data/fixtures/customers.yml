@@ -11,10 +11,10 @@ customers:
       default_shipping: ~
       dob: ~
       email: fixture_email
-      firstname: fixture_string
+      firstname: fixture_capsed_string
       gender: ~
       group_id: fixture_group_id
-      lastname: fixture_string
+      lastname: fixture_capsed_string
       middlename: ~
       password_hash: fixture_password_hash
       prefix: ~
@@ -41,10 +41,10 @@ addresses:
       company: fixture_string
       country_id: fixture_country
       fax: fixture_phone
-      firstname: fixture_string
-      lastname: fixture_string
+      firstname: fixture_capsed_string
+      lastname: fixture_capsed_string
       middlename: ~      
-      parent_id: fixture_customer
+      parent_id: fixture_customer_by_addresses
       postcode: fixture_zip
       prefix: ~      
       region: fixture_region
@@ -56,7 +56,7 @@ addresses:
   entries:
     bulk_addresses:
       <<: *addresses_base
-      iterate: 200
+      iterate: 1000
 
     chicago:
       <<: *addresses_base

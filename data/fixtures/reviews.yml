@@ -21,7 +21,7 @@ reviews:
     customer_id: ~
     created_at: fixture_past_date
     entity_id: 1 # product
-    entity_pk_value: fixture_product_id
+    entity_pk_value: fixture_product
     status_id: 1 # approved
     iterate: 1
 

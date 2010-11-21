@@ -13,11 +13,17 @@ require_once("lib/db.php");
 
 $sqlsts     = array();
 $purges     = array();
+$edition    = get_edition();
 
 if(user_yesno("Purge sales order / quote data?")) {
     $purges[]   = "Sales orders";
-    $sqlsts[]   = "delete from sales_order";
-    $sqlsts[]   = "delete from sales_order_entity";
+    if(0 == strcmp("community", $edition)) {
+        $sqlsts[]   = "delete from sales_order";
+        $sqlsts[]   = "delete from sales_order_entity";
+    } else {
+        $sqlsts[]   = "delete from sales_flat_order";
+    }
+
     $sqlsts[]   = "delete from sales_flat_order_item";
     $sqlsts[]   = "delete from sales_flat_quote";
 

@@ -11,6 +11,7 @@
 require_once("lib/base.php"); 
 require_once("lib/yml.php"); 
 require_once("lib/db.php"); 
+session_start();
 init_magento();
 
 if(2 > $_SERVER['argc']) {
@@ -122,6 +123,7 @@ function iterate_numeric_prompt($context) {
 function save_record(array $entry, $context) {
     $entry  = $entry + array(); //take an array copy
     $entity = get_entity($context);
+    $context->entity = $entity;
 
     foreach($entry as $key => $value) {
         if($value && function_exists($value)) {
@@ -131,8 +133,17 @@ function save_record(array $entry, $context) {
         }
     }
 
+    if(isset($context->data['entity_type'])) {
+        $process_func = "process_".$context->data['entity_type'];
+        if(function_exists($process_func)) {
+            $process_func($entry, $context, $entity);
+        }
+    }
+
     $entity->setData($entry);
-    $entity->save();
+    if(!$entity->save()) {
+        throw new Exception("Save didn't happen");
+    }
 }
 
 
@@ -151,6 +162,10 @@ function save_record(array $entry, $context) {
 
 function fixture_string($entry, $context) {
     return get_flw($context).get_flw($context);
+}
+
+function fixture_capsed_string($entry, $context) {
+    return ucfirst(fixture_string($entry, $context));
 }
 
 function fixture_sentence($entry, $context) {
@@ -274,12 +289,28 @@ function fixture_store_name() {
     return Mage::app()->getStore()->getName();
 }
 
+function fixture_long_store_name() {
+    $store = fixture_website_name()."\n".
+             fixture_store_group_name()."\n".
+             fixture_store_name();
+
+    return $store;
+}
+
 function fixture_store_id() {
     return Mage::app()->getStore()->getId();
 }
 
 function fixture_website_id() {
     return Mage::app()->getStore()->getWebsite()->getId();
+}
+
+function fixture_website_name() {
+    return Mage::app()->getStore()->getWebsite()->getName();
+}
+
+function fixture_store_group_name() {
+    return Mage::app()->getStore()->getGroup()->getName();
 }
 
 function fixture_address($entry, $context) {
@@ -293,15 +324,66 @@ function fixture_address($entry, $context) {
     return $row['entity_id']*1;
 }
 
-function fixture_customer($entry, $context) {
-    $sqlst = "select entity_id from customer_entity order by rand() limit 1";
+function fixture_customer_by_addresses($entry, $context) {
+    # try to select by fewest addresses
+    $sqlst = "select entity_id, 
+        (select count(*) from customer_address_entity a where a.parent_id = e.entity_id) addresses
+        from customer_entity e order by addresses asc, rand() limit 1";
     $res = mysql_query($sqlst);
     if(!$res) {
         throw new Exception("Couldn't get a customer entity");
     }
 
     $row = mysql_fetch_array($res);
-    return $row['entity_id']*1;
+    $entity_id = $row['entity_id']*1;
+    $context->customer_id = $entity_id;
+    return $entity_id;
+}
+
+function fixture_customer($entry, $context) {
+    $sqlst = "select entity_id from customer_entity e order by rand() limit 1";
+    $res = mysql_query($sqlst);
+    if(!$res) {
+        throw new Exception("Couldn't get a customer entity");
+    }
+
+    $row = mysql_fetch_array($res);
+    $entity_id = $row['entity_id']*1;
+    $context->customer_id = $entity_id;
+    return $entity_id;
+}
+
+function fixture_customer_group($entry, $context) {
+    if(!isset($context->customer_id)) {
+        throw new Exception("Can't get address for non-existent customer.");
+    }
+
+    $customer = Mage::getModel("customer/customer")->load($context->customer_id);
+    return $customer->getGroupId();
+}
+
+function fixture_customer_email($entry, $context) {
+    if(!isset($context->customer_id)) {
+        throw new Exception("Can't get address for non-existent customer.");
+    }
+
+    $customer = Mage::getModel("customer/customer")->load($context->customer_id);
+    return $customer->getEmail();
+}
+
+function fixture_customer_address($entry, $context) {
+    if(!isset($context->customer_id)) {
+        throw new Exception("Can't get address for non-existent customer.");
+    }
+
+    $customer = Mage::getModel("customer/customer")->load($context->customer_id);
+    $addresses = $customer->getAddressesCollection();
+    if(!count($addresses)) {
+        throw new Exception("Customer didn't have any addresses.");
+    }
+
+    $address = $addresses->getFirstItem();
+    return $address->getId();
 }
 
 function fixture_email($entry, $context) {
@@ -320,6 +402,15 @@ function fixture_password_hash() {
     return get_hash("password", 2);
 }
 
+function fixture_entity_type($entry, $context) {
+    if(!isset($context->data['entity_type'])) {
+        throw new Exception("Need to specify an entity type.");
+    }
+
+    $cfg = Mage::getSingleton("eav/config");
+    return $cfg->getEntityType($context->data['entity_type'])->getEntityTypeId();
+}
+
 function get_flw($context) {
     if(!isset($context->four_letter_words) || !count($context->four_letter_words)) {
         $context->four_letter_words = get_four_letter_words();
@@ -334,7 +425,7 @@ function get_four_letter_words() {
     return explode("\n", file_get_contents("$support_dir/fourletterwords.txt"));
 }
 
-function fixture_product_id() {
+function fixture_product() {
     $sqlst  = "select entity_id from catalog_product_entity order by rand() limit 1";
     $res    = mysql_query($sqlst);
     if(!$res) {
@@ -353,4 +444,76 @@ function get_lipsum($context) {
     }
 
     return $context->lipsum_sentences;
+}
+
+function process_order($entry, $context, $entity) {
+    $quote      = Mage::getModel("sales/quote");
+
+    $payment    = Mage::getModel("sales/order_payment");
+    $payment->setMethod('free');
+    $entity->addPayment($payment);
+
+    $qshipping = Mage::getModel("sales/quote_address");
+    $qshipping->importCustomerAddress(Mage::getModel("customer/address")->load($entry['shipping_address_id']));
+    $oshipping = Mage::getModel("sales/order_address");
+    Mage::helper("core")->copyFieldset(
+        "sales_convert_quote_address",
+        "to_order_address",
+        $qshipping,
+        $oshipping
+    );
+    $entity->setShippingAddress($oshipping);
+
+    $qbilling = Mage::getModel("sales/quote_address");
+    $qbilling->importCustomerAddress(Mage::getModel("customer/address")->load($entry['billing_address_id']));
+    $obilling = Mage::getModel("sales/order_address");
+    Mage::helper("core")->copyFieldset(
+        "sales_convert_quote_address",
+        "to_order_address",
+        $qbilling,
+        $obilling
+    );
+    $entity->setBillingAddress($obilling);
+
+    $num_items  = $entry['total_item_count'];
+    $qty        = $entry['total_qty_ordered'];
+    if($qty < $num_items) {
+        $qty    = $num_items;
+        $entity->setTotalQtyOrdered($qty);
+    }
+    
+    $items      = Mage::getModel("catalog/product")
+        ->getCollection()
+        ->setPageSize($num_items);
+    $items->getSelect()->order('rand()');
+    $items      = $items->getItems();
+
+    if(count($items) < $num_items) {
+        throw new Exception("There aren't enough items to generate orders.");
+    }
+
+    for($i = 0; $i < $num_items; $i++) {
+        $thisqty    = ($i == ($num_items-1))?$qty:1;
+        $qty -= $thisqty;
+
+        $product    = Mage::getModel("catalog/product")->load($items[$i]['product_id']);
+        $sitem      = Mage::getModel("cataloginventory/stock_item")
+            ->loadByProduct($product);
+        $product->setStockItem($sitem);
+        $qitem      = Mage::getModel("sales/quote_item")
+            ->setQuote($quote)
+            ->setProduct($product)
+            ->setOriginalPrice($product->getPrice())
+            ->setCalculationPrice($product->getPrice())
+            ->setQty($thisqty);
+
+        $oitem      = Mage::getModel("sales/order_item");
+        Mage::helper("core")->copyFieldset(
+            "sales_convert_quote_item",
+            "to_order_item",
+            $qitem,
+            $oitem
+        );
+        $entity->addItem($oitem);
+    }
 }

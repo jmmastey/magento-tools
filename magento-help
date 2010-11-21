@@ -1,0 +1,4 @@
+#!/usr/bin/env php
+<?php
+$dirname = dirname(__FILE__);
+print `cat $dirname/README`;
