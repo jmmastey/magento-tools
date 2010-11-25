@@ -5,22 +5,22 @@
 # Changes permissions on the magento directory. Meant to be invoked from the
 # magento root. Thanks to Igor Rafalovsky for better directory permissions.
 #
-# @author 		Joseph Mastey <joseph.mastey@gmail.com>
-# @author		$Author$
-# @version		$Id: permissions.sh 1388 2010-02-12 02:35:36Z joe $
-# @copyright	Copyright (c) JRM Ventures LLC, 2009-
+# @author       Joseph Mastey <joseph.mastey@gmail.com>
+# @author       $Author$
+# @version      $Id: permissions.sh 1388 2010-02-12 02:35:36Z joe $
+# @copyright    Copyright (c) JRM Ventures LLC, 2009-
 #
 
 if [ ! -f "LICENSE.txt" ]; then
-	print "This doesn't look like the magento directory. Aborting."
-	exit 1
+    print "This doesn't look like the magento directory. Aborting."
+    exit 1
 fi
 
 if (( $# > 0 )); then
-	owner=$1
-	echo "Setting owner on all files to $owner."
-	chown -R $owner .
-    echo "Done."	
+    owner=$1
+    echo "Setting owner on all files to $owner."
+    chown -R $owner .
+    echo "Done."    
 fi
 
 dir_permission='0755'
@@ -47,8 +47,8 @@ echo " Done."
 echo -ne "Do you want to change media and other directories to allow apache to write to them? [Y/n]: "
 read DECISION
 if [[ "$DECISION" =~ no? ]]; then
-	echo "Skipping media directories. Finished changing permissions."
-	exit
+    echo "Skipping media directories. Finished changing permissions."
+    exit
 fi
 
 # 0777 would be ideal, but PHP on many installations has security problems with files and directories

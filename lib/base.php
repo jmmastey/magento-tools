@@ -19,9 +19,13 @@ require_once("$support_dir/defaults.php");
 
 // @throws Exception we're not inside of magento
 $magento        = find_magento();
+$magento_init   = false;
 
 function init_magento($store_code = 'default', $scope_code = 'store') {
-    global $magento;
+    global $magento, $magento_init;
+
+    if($magento_init) { return; }
+    $magento_init = true;
 
     chdir("$magento");
     require_once("$magento/app/Mage.php");

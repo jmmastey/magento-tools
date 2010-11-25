@@ -175,13 +175,13 @@ function get_string_params($string) {
 }
 
 function get_hash($string, $salt_digits) {
+    init_magento();
     $salt = "";
     for($i = 0; $i < $salt_digits; $i++) {
         $salt .= chr(rand(65,90));
     }
 
-    return md5($salt.$string).":".$salt;
-
+    return Mage::helper("core")->getHash($string, $salt);
 }                                                                                                                            
 
 function get_edition() {

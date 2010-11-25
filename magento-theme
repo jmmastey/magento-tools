@@ -4,10 +4,10 @@
 // Get currently used design.
 // It's possible to use multiple designs, but we're most interested in the template theme.
 //
-// @author 		Joseph Mastey <joseph.mastey@gmail.com>
-// @author    $Author$
-// @version   $Id$
-// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
 $use_default_connection = true;
 require_once("lib/db.php");
@@ -28,7 +28,7 @@ switch($_SERVER['argc']) {
 }
 
 $sqlst  = "select value from core_config_data where path = 'design/theme/skin' and scope = '$scope' and scope_id like '$scope_id' limit 1";
-$res	= mysql_query($sqlst, $db_conn) or die("mysql error: ".mysql_error());
+$res    = mysql_query($sqlst, $db_conn) or die("mysql error: ".mysql_error());
 
 $row    = mysql_fetch_array($res);
 

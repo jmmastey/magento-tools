@@ -3,10 +3,10 @@
 //
 // Get the list of currently installed modules
 //
-// @author 		Joseph Mastey <joseph.mastey@gmail.com>
-// @author    $Author$
-// @version   $Id$
-// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
 require_once("lib/base.php");
 

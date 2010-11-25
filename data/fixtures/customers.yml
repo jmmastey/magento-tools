@@ -37,8 +37,8 @@ addresses:
   entity: customer/address
   bases:
     base: &addresses_base
-      city: fixture_string
-      company: fixture_string
+      city: fixture_capsed_string
+      company: fixture_capsed_string
       country_id: fixture_country
       fax: fixture_phone
       firstname: fixture_capsed_string

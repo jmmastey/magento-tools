@@ -6,8 +6,8 @@
 // Creates a new class file w/ appropriately substituted values
 //
 // @author 		Joseph Mastey <joseph.mastey@gmail.com>
-// @author    $Author$
-// @version   $Id$
+// @author      $Author$
+// @version     $Id$
 // @copyright	Copyright (c) JRM Ventures LLC, 2010-
 
 require_once("lib/base.php");

@@ -275,7 +275,7 @@ function fixture_street($entry, $context) {
     $streets    = rand(1,2);
     $str        = "";
     for($i = 0; $i < $streets; $i++) {
-        $str    .= rand(10,99999)." ".fixture_string($entry, $context)."\n";
+        $str    .= rand(10,99999)." ".fixture_capsed_string($entry, $context)."\n";
     }
 
     return trim($str);
@@ -486,7 +486,7 @@ function process_order($entry, $context, $entity) {
         ->getCollection()
         ->setPageSize($num_items);
     $items->getSelect()->order('rand()');
-    $items      = $items->getItems();
+    $items      = array_values($items->getItems());
 
     if(count($items) < $num_items) {
         throw new Exception("There aren't enough items to generate orders.");
@@ -494,9 +494,9 @@ function process_order($entry, $context, $entity) {
 
     for($i = 0; $i < $num_items; $i++) {
         $thisqty    = ($i == ($num_items-1))?$qty:1;
-        $qty -= $thisqty;
+        $qty        -= $thisqty;
 
-        $product    = Mage::getModel("catalog/product")->load($items[$i]['product_id']);
+        $product    = $items[$i];
         $sitem      = Mage::getModel("cataloginventory/stock_item")
             ->loadByProduct($product);
         $product->setStockItem($sitem);
@@ -514,6 +514,7 @@ function process_order($entry, $context, $entity) {
             $qitem,
             $oitem
         );
+        $oitem->setProductId($product->getId());
         $entity->addItem($oitem);
     }
 }

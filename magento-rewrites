@@ -3,10 +3,10 @@
 //
 // Get magento version
 //
-// @author 		Joseph Mastey <joseph.mastey@gmail.com>
-// @author    $Author$
-// @version   $Id$
-// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
 require_once("lib/base.php"); 
 init_magento();
@@ -21,6 +21,6 @@ foreach($types as $type) {
         foreach($config->rewrite[0] as $rewrite => $node) {
             printf("%60s\t%s\n", "$name/$rewrite", "$node");
         }
-    }                        
+    }
     print "\n\n";
 }

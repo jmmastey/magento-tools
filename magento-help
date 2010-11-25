@@ -1,4 +1,37 @@
 #!/usr/bin/env php
 <?php
-$dirname = dirname(__FILE__);
-print `cat $dirname/README`;
+//
+// Output help information
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+$basedir = dirname(__FILE__);
+
+if(1 >= $_SERVER['argc']) {
+    print "\n";
+    readfile("$basedir/README");
+    print "\nAvailable commands:\n";
+    $commands = `ls $basedir | grep magento`;
+    foreach(explode("\n", trim($commands)) as $command) {
+        print "  $command\n";
+    }
+    exit;
+}
+
+$helpfile = $_SERVER['argv'][1];
+if(file_exists("$basedir/help/$helpfile.txt")) {
+    readfile("$basedir/help/$helpfile.txt");
+    print "\n";
+    exit;
+}
+
+if(file_exists("$basedir/help/magento-$helpfile.txt")) {
+    readfile("$basedir/help/magento-$helpfile.txt");
+    print "\n";
+    exit;
+}
+
+print "Not sure what you're talking about.\n";

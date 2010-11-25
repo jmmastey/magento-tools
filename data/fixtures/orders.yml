@@ -58,5 +58,5 @@ orders:
   entries:
     sales:
       <<: *order_base
-      iterate: 5
+      iterate: numeric_prompt
       total_qty_ordered: 10

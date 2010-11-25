@@ -16,7 +16,9 @@ $cd_paths           = array(
   'etc'         => '%magento%/app/etc',
   'modules'     => '%magento%/app/etc/modules',
 
+  'var'         => '%magento%/var',
   'log'         => '%magento%/var/log',
+  'logs'        => '%magento%/var/log',
   'report'      => '%magento%/var/report',
 
   'skin'        => '%magento%/skin/frontend/%edition_package%/%theme%',
