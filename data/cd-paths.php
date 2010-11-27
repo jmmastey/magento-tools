@@ -1,7 +1,7 @@
 <?php
 
 // use this as $magento path if we can't find the proper magento path
-$default_path       = "/var/www/psb";
+$default_path       = "/var/www/ll";
 
 $cd_paths           = array(
   'app'         => '%magento%/app',

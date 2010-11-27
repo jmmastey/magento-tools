@@ -1,16 +1,14 @@
 <?xml version="1.0"?>
 <config>
   <%scope%>
-    <layout>
-      <translate>
-        <modules>
-          <%module%>
-            <files>
-              <default>%module%.csv</default>
-            </files>
-          </%module%>
-        </modules>
-      </translate>
-    </layout>
+    <translate>
+      <modules>
+        <%module%>
+          <files>
+            <default>%module%.csv</default>
+          </files>
+        </%module%>
+      </modules>
+    </translate>
   </%scope%>
 </config>

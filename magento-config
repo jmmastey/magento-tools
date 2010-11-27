@@ -49,7 +49,7 @@ try {
     }
 
     if(!$module) {
-        $plugin_path    = user_module_path("Which plugin should be overridden", null);
+        $plugin_path    = user_module_path("Which plugin should be overridden", current_module("local"));
     } else {
         $plugin_path    = module_path($module);
     }

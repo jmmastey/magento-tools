@@ -4,7 +4,8 @@
 $profile           = array(
   'description'   => 'lilluxe.com',
   'config'        => array(
-    'web/unsecure/base_url' => 'http://ll.transmogrified.com/',
-    'web/secure/base_url'   => 'http://ll.transmogrified.com/',
+    'web/unsecure/base_url'   => 'http://ll.transmogrified.com/',
+    'web/secure/base_url'     => 'http://ll.transmogrified.com/',
+    'payment/checkmo/active'  => 1,
   ),
 );

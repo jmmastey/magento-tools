@@ -13,7 +13,22 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 init_magento();
 
-mysql_query("delete from purchase_order");
-mysql_query("delete from supplier where sup_id > 3");
-$po = Mage::getModel("purchaseorder/purchase_order");
-$po->generatePurchaseOrders();
+
+if (!Mage::helper('enterprise_reward')->isEnabled()) {
+    return;
+}
+
+$customer   = Mage::getModel("customer/customer")->load(773);
+$data       = array(
+    'store_id'      => Mage::app()->getDefaultStoreView()->getWebsiteId(),
+);
+
+$reward = Mage::getModel('enterprise_reward/reward')
+    ->setCustomer($customer)
+    ->setWebsiteId(Mage::app()->getStore($data['store_id'])->getWebsiteId())
+    ->loadByCustomer();
+
+$reward->addData($data)
+    ->setAction(Enterprise_Reward_Model_Reward::REWARD_ACTION_INVITATION_ORDER)
+    ->setActionEntity($customer)
+    ->updateRewardPoints();

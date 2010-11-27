@@ -5,7 +5,7 @@
       <updates>
         <%module%>
           <file>%module%.xml</file>
-        </%module>
+        </%module%>
       </updates>
     </layout>
   </%scope%>
