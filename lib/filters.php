@@ -29,19 +29,27 @@ function move_filtered_file( $source, $target, $subs ) {
 
 function get_filter_values( $source, &$values ) {
     $filters = array();
-    if(!preg_match_all("/%([a-z0-9_-]*)%/", $source, $filters)) {
+    //                             :-]
+    if(!preg_match_all("/%([a-z0-9_:-]*)%/", $source, $filters)) {
         return $values;
     }
     
     $filters = array_unique($filters[1]);
     foreach($filters as $filter_key) {
-        if(isset($values[$filter_key])) { continue; }
+        if(isset($values[$filter_key]) && !in_array($filter_key, $values['defaults'])) {
+            continue;
+        }
+
+        $default = null;
+        if(isset($values[$filter_key])) {
+            $default = $values[$filter_key];
+        }
 
         $filter_func = "filter_$filter_key";
         if(function_exists($filter_func)) {
-            $filter_func($values);
+            $filter_func($values, $default);
         } else {
-            filter_value($filter_key, $values);
+            filter_value($filter_key, $values, $default);
         }
     }
 
@@ -50,12 +58,12 @@ function get_filter_values( $source, &$values ) {
 
 // specific filters called for required values
 
-function filter_value( $filter_key, &$values ) {
-    $values[$filter_key] = user_text("Enter a value for $filter_key");
+function filter_value( $filter_key, &$values, $default = null ) {
+    $values[$filter_key] = user_text("Enter a value for $filter_key", $default);
 }
 
-function filter_classtype( &$values ) {
-    $values['classtype'] = user_array_choice("Select a class type", array("block", "model"));
+function filter_classtype( &$values, $default = null ) {
+    $values['classtype'] = user_array_choice("Select a class type", array("block", "model"), $default);
 }
 
 function filter_rewrite_module_lower( &$values ) {
@@ -67,11 +75,11 @@ function filter_rewrite_module_lower( &$values ) {
     $values['rewrite_module_lower'] = strtolower($module);
 }
 
-function filter_rewrite_handle( &$values ) {
-    $values['rewrite_handle'] = user_text("Select class handle to override (class only, no module)");
+function filter_rewrite_handle( &$values, $default ) {
+    $values['rewrite_handle'] = user_text("Select class handle to override (class only, no module)", $default);
 }
 
-function filter_rewrite_class( &$values ) {
-    $class = user_text("Select class to override to");
+function filter_rewrite_class( &$values, $default ) {
+    $class = user_text("Select class to override to", $default);
     $values['rewrite_class'] = $class;
 } 

@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<!--@scope global@-->
+<!--@use standard@-->
 <config>
   <%scope%>
     <routers>

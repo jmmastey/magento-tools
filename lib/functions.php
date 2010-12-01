@@ -11,14 +11,26 @@ function file_to_class( $file ) {
 
 // get the classname that a handle represents.
 function handle_to_class( $handle, $type ) {
+    // try to let magento find it for us
+    if($class = get_magento_class($handle, $type)) {
+        return $class;
+    }
+
     list( $module, $class )   = explode("/", $handle);  
     list( $codepool, $company, $module ) = explode("/", module_path($module));
 
     $type                   = ucfirst($type);
     $class                  = str_replace(" ", "_", ucwords(str_replace("_", " ", $class)));
-
+ 
     return "{$company}_{$module}_{$type}_{$class}";
 }//end handle_to_class
+
+function get_magento_class($handle, $type) {
+    init_magento();
+
+    $func = "get".ucfirst($type); //getModel
+    return get_class(Mage::$func($handle));
+}
 
 // get the controller that a handle represents.
 function handle_to_controller( $handle ) {
@@ -50,6 +62,13 @@ function module_path($target) {
     return find_path($target, "$magento/app/code/*/*", "$magento/app/code/");
 }
 
+// get module path inside of LOCAL only, but match only on partial name
+function fuzzy_module_path($target) {
+    $magento = magento_path();
+    return find_path($target, "$magento/app/code/local/*", "$magento/app/code/", false, true);
+}
+
+
 // check if a module has already been created
 function module_exists($target) {
     $magento = magento_path();
@@ -77,12 +96,16 @@ function company_path($target) {
 }
 
 // case-insensitively find a dir that is a subdirectory of some other dir. return the path to it.
-function find_path($target, $search, $trim = null, $return_count = false ) {
+function find_path($target, $search, $trim = null, $return_count = false, $use_fuzzy = false) {
     if(false !== strpos($target, "/")) {
         throw new Exception("Directory names don't contain slashes. Can't search for $target");
     }
 
-    $res = `find $search -maxdepth 1 -mindepth 1 -iname "$target" -type d`;
+    if($use_fuzzy) { $target = "*$target*"; }
+
+    $cmd = "find $search -maxdepth 1 -mindepth 1 -iname \"$target\" -type d";
+    //print "$cmd\n";
+    $res = `$cmd`;
 
     $res = explode("\n", $res);
     array_pop($res); // get rid of trailing newline

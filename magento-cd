@@ -95,5 +95,16 @@ try {
   // it wasn't a model handle. keep moving.
 }
 
+
+// it's a really poorly typed module handle!
+try {
+  $target_path = fuzzy_module_path($target);
+  print_error("Buh? Headed to FAKE local module '$target'. Put a little more effort in next time.\n");
+  print "$magento/app/code/$target_path";
+  exit;
+} catch( Exception $e ) {
+  // it wasn't a poorly typed module name. keep moving.
+}
+
 print_error("Couldn't figure out where $target is. Meditate on uncertainty and try again.\n");
 print `pwd`;

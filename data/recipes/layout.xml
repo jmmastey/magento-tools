@@ -4,7 +4,7 @@
     <layout>
       <updates>
         <%module%>
-          <file>%module%.xml</file>
+          <file>%module_lower%.xml</file>
         </%module%>
       </updates>
     </layout>

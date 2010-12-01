@@ -13,22 +13,22 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 init_magento();
 
+$modules = Mage::getConfig()->getNode('modules')->children();
+$modulesArray = (array)$modules;
 
-if (!Mage::helper('enterprise_reward')->isEnabled()) {
-    return;
+if(isset($modulesArray['Mage_Paypals'])) {
+    echo "Paypal module is active.";
+} else {
+    echo "Paypal module is not active.";
 }
 
-$customer   = Mage::getModel("customer/customer")->load(773);
-$data       = array(
-    'store_id'      => Mage::app()->getDefaultStoreView()->getWebsiteId(),
-);
+exit;
 
-$reward = Mage::getModel('enterprise_reward/reward')
-    ->setCustomer($customer)
-    ->setWebsiteId(Mage::app()->getStore($data['store_id'])->getWebsiteId())
-    ->loadByCustomer();
-
-$reward->addData($data)
-    ->setAction(Enterprise_Reward_Model_Reward::REWARD_ACTION_INVITATION_ORDER)
-    ->setActionEntity($customer)
-    ->updateRewardPoints();
+Mage::getModel("rewardsref/referral")
+    ->setReferralParentId(773)
+    ->setReferralEmail("foo@bar.test")
+    ->setReferralChildId(800)
+    ->setReferralName("Foo Barrington")
+    ->setReferralStatus(1)
+    ->save();
+Mage::getModel("rewardsref/transfer")->create(15, 1, 773, 800, "A referred customer made a first order", 21);

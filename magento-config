@@ -64,6 +64,7 @@ try {
     $contents           = file_get_contents($recipe);
     $xml_values         = get_string_params($contents);
     $values             = array_merge($values, $xml_values);
+    $values['defaults'] = array_keys($xml_values);
 
     $target             = "$magento/app/code/$plugin_path/etc/{$values['file']}";
     if(!file_exists($target)) {

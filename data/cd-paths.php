@@ -12,6 +12,8 @@ $cd_paths           = array(
   'theme'       => '%magento%/app/design/frontend/%edition%/%theme%',
   'template'    => '%magento%/app/design/frontend/%edition%/%theme%/template',
   'layout'      => '%magento%/app/design/frontend/%edition%/%theme%/layout',
+  'tbase'       => '%magento%/app/design/frontend/base/default/template',
+  'tlayout'     => '%magento%/app/design/frontend/base/default/layout',
 
   'etc'         => '%magento%/app/etc',
   'modules'     => '%magento%/app/etc/modules',
