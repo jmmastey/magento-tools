@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
+<!--@scope frontend@-->
 <config>
   <%scope%>
     <layout>
       <updates>
-        <%module%>
+        <%module_lower%>
           <file>%module_lower%.xml</file>
-        </%module%>
+        </%module_lower%>
       </updates>
     </layout>
   </%scope%>

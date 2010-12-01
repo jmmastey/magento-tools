@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
-<!--@scope global@-->
+<!--@scope frontend@-->
 <!--@use standard@-->
 <config>
   <%scope%>
     <routers>
-      <%module%>
+      <%module_lower%>
         <use>%use%</use>
         <args>
-          <module>%module%</module>
+          <module>%company%_%module%</module>
           <frontName>%frontname%</frontName>
         </args>
-      </%module%>
+      </%module_lower%>
     </routers>
   </%scope%>
 </config>

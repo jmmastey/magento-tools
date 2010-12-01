@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--@scope global@-->
+<!--@override_actions true@-->
+<config>
+  <%scope%>
+    <routers>
+      <%core_module%>
+        <rewrite>
+          <%core_controller%>
+            <to>%module_lower%/%new_controller%</to>
+            <override_actions>%override_actions%</override_actions>
+            <actions>
+              <core_action><to>%module_lower%/%new_controller%/%new_action%</to></core_action>
+            </actions>
+          </%core_controller%>
+        </rewrite>
+      </%core_module%>
+    </routers>
+  </%scope%>
+</config>
