@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--@docstring Config group (the collapsable righthand sections)@-->
 <!--@file system.xml@-->
 <config>
   <sections>

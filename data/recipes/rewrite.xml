@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--@docstring Controller rewrite for single action (regexp based path)@-->
 <config>
   <global>
     <rewrite>

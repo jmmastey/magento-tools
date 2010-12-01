@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--@docstring i18n declaration@-->
 <config>
   <%scope%>
     <translate>

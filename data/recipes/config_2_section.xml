@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--@docstring Config section (the plentiful lefthand menu items)@-->
 <!--@file system.xml@-->
 <config>
   <sections>

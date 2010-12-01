@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--@docstring Config default value for a field@-->
 <config>
   <default>
     <%section_lower%>

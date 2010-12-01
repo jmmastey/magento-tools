@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--@docstring Config tab (the highest level config element)@-->
 <!--@file system.xml@-->
 <config>
   <tabs>

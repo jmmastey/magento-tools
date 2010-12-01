@@ -15,7 +15,7 @@ switch(count($_SERVER['argv'])) {
     case 1:
         print "Usage: magento-config pattern [module] [options]\n\n";
         print "Available patterns:\n";
-        passthru("ls $support_dir/recipes | sed -e 's/.xml//' -e 's/^/  /' | tr '\n' '  '");
+        print_recipes();
         print "\n";
         exit;
     case 2:
@@ -84,4 +84,18 @@ try {
     fclose($fp);
 } catch( Exception $em_all ) {
     print_error($em_all->getMessage()."\n");
+}
+
+function print_recipes() {
+    global $support_dir;
+
+    $recipes = explode("\n", `ls $support_dir/recipes | sed -e 's/.xml//' -e 's/^/  /'`);
+    foreach($recipes as $recipe) {
+        $recipe = trim($recipe);
+        if(!$recipe) { continue; }
+
+        $description = trim(`grep "docstring" $support_dir/recipes/$recipe.xml | sed -e "s/.*docstring \([^@]*\)@.*/\\1/"`);
+        if(!$description) { $description = ""; }
+        printf("  %-25s\t%s\n", $recipe, $description);
+    }
 }
