@@ -28,8 +28,15 @@ function handle_to_class( $handle, $type ) {
 function get_magento_class($handle, $type) {
     init_magento();
 
-    $func = "get".ucfirst($type); //getModel
-    return get_class(Mage::$func($handle));
+    switch($type) {
+        case 'block':
+            return Mage::getConfig()->getBlockClassName($handle);
+        case 'model':
+            return get_class(Mage::getModel($handle));
+
+    }
+
+    throw new Exception("Not sure how to retrieve class.");
 }
 
 // get the controller that a handle represents.
