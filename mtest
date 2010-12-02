@@ -13,22 +13,8 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 init_magento();
 
-$modules = Mage::getConfig()->getNode('modules')->children();
-$modulesArray = (array)$modules;
-
-if(isset($modulesArray['Mage_Paypals'])) {
-    echo "Paypal module is active.";
-} else {
-    echo "Paypal module is not active.";
-}
-
-exit;
-
-Mage::getModel("rewardsref/referral")
-    ->setReferralParentId(773)
-    ->setReferralEmail("foo@bar.test")
-    ->setReferralChildId(800)
-    ->setReferralName("Foo Barrington")
-    ->setReferralStatus(1)
-    ->save();
-Mage::getModel("rewardsref/transfer")->create(15, 1, 773, 800, "A referred customer made a first order", 21);
+mysql_query("delete from purchase_order");
+mysql_query("delete from purchase_supplier");
+                                                                  
+//Mage::getModel("purchaseorder/purchase_order")->generatePurchaseOrders(14);
+Mage::getModel("purchaseorder/purchase_order")->generatePOForEventId(1);

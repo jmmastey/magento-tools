@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!--@docstring New total type@-->
+<!--@before grand_total@-->
+<!--@after subtotal@-->
+<!--@priority 15@-->
+<config>
+  <global>
+    <sales>
+      <quote>
+        <totals>
+          <%totalname%>
+            <class>%model_handle%</class>
+            <before>%before%</before>
+            <after>%after%</after>
+            <renderer>%block_handle%</renderer>
+            <admin_renderer>%block_handle%</admin_renderer>                     
+          </%totalname%>
+        </totals>
+      </quote>
+    </sales>
+    <pdf>
+      <totals>
+        <%totalname%>
+          <class>%model_handle%</class>
+          <before>%before%</before>
+          <after>%after%</after>
+          <renderer>%block_handle%</renderer>
+          <admin_renderer>%block_handle%</admin_renderer>                     
+        </%totalname%>
+      </totals>
+    </pdf>
+  </global>
+  <default>
+    <sales>
+      <totals_sort>
+        <%totalname%>%priority%</%totalname%>
+      </totals_sort>
+    </sales>
+  </default>
+</config>
