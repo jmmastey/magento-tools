@@ -3,10 +3,10 @@
 <config>
   <global>
     <rewrite>
-      <%module%_%action%>
-        <from><!--[CDATA[#%from_path%#]]--></from>
+      <%override_handle%>
+        <from><![CDATA[#%from_path_preg%#]]></from>
         <to>%to_path%</to>
-      </%module%_%action%>
+      </%override_handle%>
     </rewrite>
   </global>
 </config>
