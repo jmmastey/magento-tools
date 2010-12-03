@@ -1,0 +1,40 @@
+#!/usr/bin/env php
+<?php
+//
+// Magento Controller Creator
+//
+// Creates a new class file w/ appropriately substituted values
+//
+// @author    Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); // load everything
+
+switch($_SERVER['argc']) {
+  case 2:
+    $module     = $_SERVER['argv'][1];
+    break;  
+  default:
+    $module     = current_module("local");
+    break;
+}
+
+print "Adding setup file for $module\n";
+
+$module_path        = module_path($module);
+$module_lower       = strtolower($module);
+$target             = "$magento/app/code/$module_path/sql/{$module_lower}_setup";
+
+list($codepool, $company, $mod) = explode("/", $module_path);
+$version            = module_version($company, $module);
+$target_filename    = "mysql4-install-{$version}.php";
+
+if(file_exists("$target/$target_filename")) {
+    print_error("Setup file already exists for $version. Try incrementing your version and try again.\n");
+    exit;
+}
+
+`mkdir -p $target`;
+`cp $support_dir/setup/base.php $target/$target_filename`;

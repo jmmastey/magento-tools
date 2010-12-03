@@ -33,7 +33,13 @@ function get_magento_class($handle, $type) {
             return Mage::getConfig()->getBlockClassName($handle);
         case 'model':
             return get_class(Mage::getModel($handle));
-
+        default:
+            // HACKS!
+            list( $module, $class ) = explode("/", $handle);  
+            list( $codepool, $company, $module )  =  explode("/", module_path($module));
+            $class = str_replace(" ", "_", ucwords(str_replace("_", " ", $class)));
+            $type = ucfirst($type);
+            return "{$company}_{$module}_{$type}_{$class}";
     }
 
     throw new Exception("Not sure how to retrieve class.");
@@ -223,4 +229,9 @@ function get_edition() {
     }
 
     return $edition;
+}
+
+function module_version($company, $module) {
+    init_magento();
+    return (string)Mage::getConfig()->getNode("modules/{$company}_{$module}/version");
 }

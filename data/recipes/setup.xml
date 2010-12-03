@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<!--@connection core_setup@-->
 <!--@docstring DB resources (for module setup)@-->
 <config>
   <global>
@@ -6,7 +7,7 @@
       <%module_lower%_setup>
         <setup>
           <module>%module%</module>
-          <class>%setup_class%</class>
+          <class>%setup_class_handle%</class>
         </setup>
         <connection>
           <use>%connection%</use>
