@@ -36,6 +36,11 @@ switch($_SERVER['argc']) {
     exit;
 }
 
+if(!preg_match("#^[a-z]+/[a-z_]+$#", $handle)) {
+    print_error("Proposed class handle fails hard ($handle)\n");
+    exit;
+}
+
 print "Creating $type for $handle\n";
 
 // get the real override
@@ -45,6 +50,8 @@ if(strlen($override)) {
   $override_handle = class_to_handle($override);
   print "This $type will be an override for $override\n";
 }
+
+print "Using $template as a template.\n";
 
 try {
     list($module, $class) = explode("/", $handle);
