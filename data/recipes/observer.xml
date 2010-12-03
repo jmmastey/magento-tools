@@ -1,15 +1,17 @@
 <?xml version="1.0"?>
+<!--@scope global@-->
+<!--@scope singleton@-->
 <!--@docstring Event observer declaration@-->
 <config>
   <%scope%>
     <events>
       <%event%>
         <observers>
-          <%event_handle%>
+          <%unique_event_handle%>
             <type>%type%</type>
             <class>%class_handle%</class>
             <method>%method%</method>
-          </%event_handle>
+          </%unique_event_handle%>
         </observers>
       </%event%>
     </events>
