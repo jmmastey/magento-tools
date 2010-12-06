@@ -48,3 +48,34 @@ function rollback_db_transaction() {
 function _autocommit( $value ) {
     mysql_query("set @@autocommit = $value") or die(mysql_error());
 }
+
+function get_config_data($path, $default = null) {
+    $path   = mysql_real_escape_string($path);
+    $sqlst  = "select value from core_config_data where path = \"$path\"";
+    $res    = mysql_query($sqlst);
+
+    if(!$res) {
+        print_error("$sqlst\n");
+        throw new Exception(mysql_error());
+    }
+
+    if(!mysql_num_rows($res)) { return $default; }
+
+    $row = mysql_fetch_array($res);
+    return $row['value'];
+}
+
+function set_config_data($path, $value) {
+    $path   = mysql_real_escape_string($path);
+    $value  = mysql_real_escape_string($value);
+
+    $sqlst  = "update core_config_data set value='$value' where path='$path'";
+    $res    = mysql_query($sqlst);
+
+    if(!$res) {
+        print_error("$sqlst\n");
+        throw new Exception(mysql_error());
+    }
+
+    return mysql_affected_rows();
+}

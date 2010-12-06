@@ -2,12 +2,19 @@
 #
 _mcd()
 {
-    local cur words
+    local cur words mwords
     COMPREPLY=()
 
     cur="${COMP_WORDS[COMP_CWORD]}"
+    curlen=$(echo ${#cur})
     words=`cat "$MAGENTO_TOOLS_PATH/data/cd-paths.php" | grep "^  '" | sed -e "s/^  '\([a-z-]*\).*/\1/"`
-    COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+
+    mwords=''
+    if [[ $cur =~ [a-z]{1,} ]]; then
+      mwords=$(_magento_modules)
+    fi
+
+    COMPREPLY=( $(compgen -W "${words} ${mwords}" -- "$cur") )
     return 0
 }
 complete -F _mcd magento-cd mcd
