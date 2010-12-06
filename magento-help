@@ -8,30 +8,24 @@
 // @version     $Id$
 // @copyright	Copyright (c) JRM Ventures LLC, 2010-
 
-$basedir = dirname(__FILE__);
+$basedir    = dirname(__FILE__);
+$commands   = explode("\n", `ls $basedir | grep magento`);
 
 if(1 >= $_SERVER['argc']) {
     print "\n";
     readfile("$basedir/README");
     print "\nAvailable commands:\n";
-    $commands = `ls $basedir | grep magento`;
-    foreach(explode("\n", trim($commands)) as $command) {
+    foreach($commands as $command) {
         print "  $command\n";
     }
     exit;
 }
-
-$helpfile = $_SERVER['argv'][1];
-if(file_exists("$basedir/help/$helpfile.txt")) {
-    readfile("$basedir/help/$helpfile.txt");
-    print "\n";
-    exit;
-}
-
-if(file_exists("$basedir/help/magento-$helpfile.txt")) {
-    readfile("$basedir/help/magento-$helpfile.txt");
-    print "\n";
-    exit;
-}
-
-print "Not sure what you're talking about.\n";
+                     
+$cmd        = $_SERVER['argv'][1];
+if(in_array($cmd, $commands)) {
+    passthru("$cmd --help");
+} else if(in_array("magento-$cmd", $commands)) {
+    passthru("magento-$cmd --help");
+} else {
+    print "No help found because you're just making up pretend commands. So sad.\n";
+}   

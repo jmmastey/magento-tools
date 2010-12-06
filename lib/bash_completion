@@ -45,6 +45,69 @@ _magento_test_fixtures()
     words=`ls $MAGENTO_TOOLS_PATH/data/fixtures | sed -e "s/.yml//"`
     COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
     return 0
-
 }
 complete -F _magento_test_fixtures magento-test-fixture
+
+_magento_class()
+{
+	local cur nm words first
+	COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+	nm=$COMP_CWORD
+
+	case "$nm" in
+	  1)
+      words='block model'
+      ;;
+    3)
+      words=$(_magento_classtypes ${COMP_WORD[1]})
+      ;;
+    2|*)
+      words=$(_magento_modules)
+      ;;
+  esac
+
+  COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+  return 0
+}
+complete -F _magento_class magento-class
+
+_magento_otherclasses()
+{
+	local cur nm words first
+	COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+	nm=$COMP_CWORD
+
+	case "$nm" in
+    2)
+      type=`echo ${COMP_WORDS[0]} | sed -e "s/magento-//"`
+      words=$(_magento_classtypes $type)
+      ;;
+    1|*)
+      words=$(_magento_modules)
+      ;;
+  esac
+
+  COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+  return 0
+}
+complete -F _magento_otherclasses magento-block magento-model
+
+
+refresh_magento_module() { magento-modules local simple > $MAGENTO_TOOLS_PATH/data/cached-modules.txt; }
+_magento_modules() { cat "$MAGENTO_TOOLS_PATH/data/cached-modules.txt"; }
+_magento_classtypes() { type=`perl -e "print ucfirst($1)"`; echo `ls $MAGENTO_TOOLS_PATH/data/$type | sed -e "s/.php//" | tr '[A-Z]' '[a-z]'`; }
+
+_magento_help()
+{
+	  local cur words
+	  COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    words=`ls $MAGENTO_TOOLS_PATH | grep magento- | sed -e "s/magento-//"`
+    COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+    return 0
+
+}
+complete -F _magento_help magento-help

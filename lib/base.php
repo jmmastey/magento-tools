@@ -13,6 +13,18 @@ if(!isset($_SERVER['argc'])) {
 	throw new Exception("You don't appear to be on command line. Go away.");
 }
 
+// helpdoc system
+if(isset($_SERVER['argv'][1]) && 0 == strcmp($_SERVER['argv'][1], "--help")) {
+    if(function_exists("putdocs")) {
+        putdocs();
+        print "\n";
+    } else {
+        print "No docs available for this function. Yell at the developer. Sorry.\n";
+    }
+
+    exit;
+}
+
 require_once(dirname(__FILE__)."/functions.php");
 $support_dir    = dirname(__FILE__)."/../data";
 require_once("$support_dir/defaults.php");

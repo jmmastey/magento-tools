@@ -108,3 +108,8 @@ try {
 
 print_error("Couldn't figure out where $target is. Meditate on uncertainty and try again.\n");
 print `pwd`;
+
+
+function putdocs() {
+    print "foo?";
+}

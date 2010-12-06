@@ -1,6 +1,0 @@
-magento-jobs-craigslist: find recently posted jobs on Craigslist for Magento work
-
-usage: magento-jobs-craigslist
-
-Valid options:
-  -d:   How recent listings must be
