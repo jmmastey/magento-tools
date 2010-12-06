@@ -30,7 +30,7 @@ class %CLASS% extends Mage_Eav_Model_Entity_Setup {
 
     /**
 	 * Get any entities that we want installed. For array format,
-	 * take a look at Mage_Catalog_Model_Resource_Mysql4_Setup.
+	 * take a look at Mage_Catalog_Model_Resource_Eav_Mysql4_Setup.
 	 *
 	 * @return array
 	 */

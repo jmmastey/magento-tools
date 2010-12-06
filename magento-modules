@@ -10,8 +10,12 @@
 
 require_once("lib/base.php");
 
+$simple = false;
 if($_SERVER['argc']) {
     $target_code_pool = $_SERVER['argv'][1];
+    if(3 == $_SERVER['argc']) {
+        $simple = true;
+    }
 }
 
 $results = `find $magento/app/code/*/* -maxdepth 1 -mindepth 1 -type d | grep -v .svn`;
@@ -36,11 +40,17 @@ foreach($results as $raw_module) {
 foreach($output as $code_pool => $companies) {
     if($target_code_pool && 0 !== strpos($code_pool, $target_code_pool)) { continue; }
 
-    print "$code_pool:\n";
+    if(!$simple) { print "$code_pool:\n"; }
     foreach($companies as $company => $modules) {
-        print "\t$company:\n";
+        if(!$simple) { print "\t$company:\n"; }
+
         foreach($modules as $module) {
-            print "\t\t$module\n";
+            if($simple) {
+                print strtolower($module)."\n";
+            } else {
+                print "\t\t$module\n";
+            }
         }
+
     }
 }

@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+//
+// Get all valid backend types
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php");
+
+$command = 'ack "<source_model>" '.$magento.' | awk \'{print $2}\' | sed -e "s/.*>\([^<]\+\).*/\1/" | sort | uniq';
+print `$command`;

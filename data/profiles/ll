@@ -4,8 +4,14 @@
 $profile           = array(
   'description'   => 'lilluxe.com',
   'config'        => array(
-    'web/unsecure/base_url'   => 'http://ll.transmogrified.com/',
-    'web/secure/base_url'     => 'http://ll.transmogrified.com/',
-    'payment/checkmo/active'  => 1,
+    'web/unsecure/base_url'           => 'http://ll.transmogrified.com/',
+    'web/secure/base_url'             => 'http://ll.transmogrified.com/',
+    'payment/checkmo/active'          => 1,
+
+    'payment/authorizenet/test'       => 1,
+    'payment/authorizenet/cgi_url'    => 'https://test.authorize.net/gateway/transact.dll',
+    'payment/authorizenet/debug'      => 1,
+    'payment/authorizenet/login'      => '0:2:74532adb51f40419:u5Xq4CxS54A9GmDUkPOBvw==',
+    'payment/authorizenet/trans_key'  => '0:2:424d60aa7a0eea05:/QRvmhK6KdDAujwiGmBzKw==',
   ),
 );

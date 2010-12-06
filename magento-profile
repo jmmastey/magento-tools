@@ -15,6 +15,7 @@
 require_once("lib/base.php");
 require_once("lib/db.php");
 
+
 print "\nStore profiles\n";
 $profiles = explode("\n", `ls $support_dir/profiles`);
 foreach($profiles as $profile) {
@@ -22,7 +23,10 @@ foreach($profiles as $profile) {
 }
 print "\n";
 
-$key = user_array_choice("Select a profile to load for this store", $profiles);
+$default = basename($magento);
+if(!in_array($default, $profiles)) { $default = null; }
+
+$key = user_array_choice("Select a profile to load for this store", $profiles, $default);
 require_once("$support_dir/profiles/$key");
 
 print "Loading site profile for $key.\n";
