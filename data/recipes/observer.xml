@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--@scope global@-->
-<!--@scope singleton@-->
+<!--@type singleton@-->
 <!--@docstring Event observer declaration@-->
 <config>
   <%scope%>

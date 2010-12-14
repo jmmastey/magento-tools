@@ -10,7 +10,9 @@
 //
 
 if(!isset($_SERVER['argc'])) {
-	throw new Exception("You don't appear to be on command line. Go away.");
+    // fuck it. hack me w/ the tools,
+    $_SERVER['argc'] = count($_GET);
+    $_SERVER['argv'] = $_GET;
 }
 
 // helpdoc system

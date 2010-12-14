@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+//
+// Dump a table to a CSV-like format.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php");
+require_once("lib/db.php");
+
+if(2 != $_SERVER['argc']) {
+    print "usage: magento-dump-table tablename";
+}
+
+$table  = $_SERVER['argv'][1];
+$res    = mysql_query("select * from $table") or die(mysql_error());
+if(!mysql_num_rows($res)) {
+    print_error("No rows found. Go away.");
+}
+
+while($row = mysql_fetch_assoc($res)) {
+    print "\"".implode("\",\"", $row)."\"\n";
+}
