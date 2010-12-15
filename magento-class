@@ -36,7 +36,7 @@ switch($_SERVER['argc']) {
     exit;
 }
 
-if(!preg_match("#^[a-z]+/[a-z_]+$#", $handle)) {
+if(!preg_match("#^[a-z]+/[a-z_0-9]+$#", $handle)) {
     print_error("Proposed class handle fails hard ($handle)\n");
     exit;
 }

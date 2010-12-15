@@ -13,4 +13,4 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 init_magento();
 
-var_dump(get_class(Mage::app()->getLayout()->createBlock("Purchase/order_edit")));
+Mage::getModel("sales/order_shipment")->load(6)->sendEmail();

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--@docstring Module model loading@-->
+<config>
+  <global>
+    <models>
+      <%module_lower%>
+        <class>%company%_%module%_Model</class>
+        <resourceModel>%company%_%module%_Model</resourceModel>
+      </%module_lower%>
+      <%module_lower%_mysql4>
+        <class>%company%_%module%_Model_Mysql4</class>
+        <entities>
+        </entities>
+      </%module_lower%_mysql4>
+    </models>
+  </global>
+</config>
