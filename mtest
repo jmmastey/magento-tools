@@ -13,4 +13,4 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 init_magento();
 
-Mage::getModel("sales/order_shipment")->load(6)->sendEmail();
+Mage::getModel("lcheckout/observer")->scheduledCartDelete();

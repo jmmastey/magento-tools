@@ -40,6 +40,7 @@ $cd_paths           = array(
   
   'root'        	=> '%magento%/',
   '-'           	=> '%magento%/',
+  'lib'           	=> '%magento%/lib',
 
   // external paths for easier navigation
   'sb'          	=> '/var/www/sb',

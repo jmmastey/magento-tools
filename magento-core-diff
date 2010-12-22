@@ -15,7 +15,13 @@ print_error("Local copy: $magento/app/code/core\n");
 print_error("Comparing to $version\n");
 print_error("\n\n");
 
-$clean_dir = "/var/www/magento/$version";
+$edition = get_edition();
+$subdir = "";
+if(0 == strcmp("enterprise", $edition)) {
+    $subdir = "enterprise/";
+}
+
+$clean_dir = "/var/www/magento/$subdir$version";
 if(!file_exists($clean_dir)) {
   print_error("Can't do diff, looking for clean copy: $clean_dir. Go download a clean copy before continuing.\n");
   exit;
