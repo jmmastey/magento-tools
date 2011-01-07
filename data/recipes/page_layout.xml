@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--@docstring New page layout type@-->
+<config>
+  <global>
+    <page>
+      <layouts>
+        <%handle% module="%module_lower%" translate="label">
+          <label>%label%</label>
+          <template>%template_file%</template>
+          <layout_handle>%handle%</layout_handle>
+          <is_default>1</is_default>
+        </%handle%>
+      </layouts>
+    </page>
+  </global>
+</config>
