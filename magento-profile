@@ -32,13 +32,32 @@ require_once("$support_dir/profiles/$key");
 print "Loading site profile for $key.\n";
 
 $query_stack    = array();
-$config_data    = $profile['config'];
+
+// change config data
 foreach($profile['config'] as $key => $value) {
     $query_stack[] = "update core_config_data set value='$value' where path='$key'";
 }
 
+// alter properties of CMS pages (like changing layout)
+if(isset($profile['cms_pages'])) {
+    foreach($profile['cms_pages'] as $identifier => $values) {
+        $keys   = array();
+        foreach($values as $key => $value) {
+            $keys[] = "$key = '$value'";
+        }
+        $keys   = implode(", ", $keys);
+
+        $query_stack[]  = "update cms_page set $keys where identifier = '$identifier'";
+    }
+}
+
+// delete all design changes
+if(isset($profile['delete_designs']) && $profile['delete_designs']) {
+    $query_stack[] = "delete from design_change";
+}
 
 start_db_transaction();
+$query = "";
 try {
     foreach($query_stack as $query) {
         $res = mysql_query($query);
@@ -46,6 +65,7 @@ try {
     }
     commit_db_transaction();
 } catch(Exception $e) {
+    print $query;
     rollback_db_transaction();
     print_error("There was an error during the database commit (".$e->getMessage()."). Couldn't load site profile.");
 }

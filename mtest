@@ -13,4 +13,11 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 init_magento();
 
-Mage::getModel("lcheckout/observer")->scheduledCartDelete();
+$collection =  Mage::getModel("enterprise_catalogevent/event")
+    ->getCollection()
+    ->addFieldToFilter('status', Enterprise_CatalogEvent_Model_Event::STATUS_OPEN)
+    ->addImageData();
+    ->setCurPage(1)
+    ->setPageSize($limit);
+
+print $collection->getSelect() . "";

@@ -25,6 +25,7 @@ $cd_paths           = array(
   'log'         	=> '%magento%/var/log',
   'logs'        	=> '%magento%/var/log',
   'report'      	=> '%magento%/var/report',
+  'backups'      	=> '%magento%/var/backups',
 
   'skin'        	=> '%magento%/skin/frontend/%edition_package%/%theme%',
   'css'         	=> '%magento%/skin/frontend/%edition_package%/%theme%/css',

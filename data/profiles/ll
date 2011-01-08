@@ -14,6 +14,15 @@ $profile           = array(
     'payment/authorizenet/login'              => '0:2:74532adb51f40419:u5Xq4CxS54A9GmDUkPOBvw==',
     'payment/authorizenet/trans_key'          => '0:2:424d60aa7a0eea05:/QRvmhK6KdDAujwiGmBzKw==',
 
-    'admin/security/session_cookie_lifetime'  => '86400'
+    'admin/security/session_cookie_lifetime'  => '86400',
+
+    'design/theme/template'                   => 'lilluxe',
+    'design/theme/skin'                       => 'lilluxe',
+    'design/theme/layout'                     => 'lilluxe',
+  ),
+ 'cms_pages'                                 => array(
+    'home'      => array(
+        'root_template' => 'one_column_lilluxe_home',
+      ),
   ),
 );
