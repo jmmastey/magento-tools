@@ -48,6 +48,7 @@ $cd_paths           = array(
   'psb'         	=> '/var/www/psb',
   'enp'         	=> '/var/www/enp',
   'll'          	=> '/var/www/ll',
+  'lldev'          	=> '/var/www/lldev',
   'utils'       	=> '/var/www/utils/magento',
 );
 

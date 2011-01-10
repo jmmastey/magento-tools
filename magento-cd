@@ -14,7 +14,7 @@ try {
 } catch( Exception $e ) {
     require_once("$support_dir/cd-paths.php"); 
     $magento    = $default_path;
-    $theme      = `cd $default_path; magento-theme`;
+    $theme      = trim(`cd $default_path; magento-theme`);
 }
 
 if(2 != $_SERVER['argc']) {
