@@ -56,6 +56,12 @@ if(isset($profile['delete_designs']) && $profile['delete_designs']) {
     $query_stack[] = "delete from design_change";
 }
 
+// disable caches
+if(isset($profile['cache_all'])) {
+    $on = $profile['cache_all'] ? "1" : "0";
+    $query_stack[] = "update core_cache_option set value = $on";
+}
+
 start_db_transaction();
 $query = "";
 try {

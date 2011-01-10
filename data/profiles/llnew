@@ -19,11 +19,15 @@ $profile = array(
     'design/theme/template'=> 'versiontwo',
     'design/theme/skin' => 'versiontwo',
     'design/theme/layout' => 'versiontwo',
+
+    'dev/js/merge_files' => '0',
+    'dev/css/merge_css_files' => '0',
   ),
   'cms_pages' => array(
     'home' => array(
         'root_template' => 'version_two_homepage',
       ),
   ),
-  'delete_designs'  => true,
+  'delete_designs' => true,
+  'cache_all' => false,
 );
