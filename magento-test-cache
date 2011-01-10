@@ -60,6 +60,10 @@ function toggle_cache($vars) {
 
     }
     $idx = user_array_choice("Select a cache to toggle", array_keys($vars->entities));
+    if(!isset($vars->entities[$idx])) {
+        print "Invalid option...";
+        return;
+    }
     $code = $vars->entities[$idx]['code'];
 
     $vars->entities[$idx]['value'] = (int)!$vars->entities[$idx]['value'];
