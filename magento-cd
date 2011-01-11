@@ -25,6 +25,17 @@ if(2 != $_SERVER['argc']) {
 
 $target = $_SERVER['argv'][1];
 
+// it's a project!
+if(is_array($project_paths) && count($project_paths)) {
+  foreach($project_paths as $path) {
+    if(file_exists("$path/$target") and is_dir("$path/$target")) {
+      print_error("Zing! Advancing to project $target.\n");
+      print "$path/$target";
+      exit;
+    }
+  }
+}
+
 // it's a developer specified shortcut!
 if(isset($cd_paths[$target])) {
   if(!isset($theme)) { $theme = trim(`magento-theme`); }

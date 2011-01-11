@@ -1,8 +1,15 @@
 <?php
 
 // use this as $magento path if we can't find the proper magento path
+// TODO: this needs to be refactored out
 $default_path       = "/var/www/ll";
 
+// places where projects may exist
+$project_paths      = array(
+    "/var/www", "/var/www/utils"
+);
+
+// paths within a project
 $cd_paths           = array(
   'app'         	=> '%magento%/app',
   'local'       	=> '%magento%/app/code/local',
@@ -42,13 +49,4 @@ $cd_paths           = array(
   'root'        	=> '%magento%/',
   '-'           	=> '%magento%/',
   'lib'           	=> '%magento%/lib',
-
-  // external paths for easier navigation
-  'sb'          	=> '/var/www/sb',
-  'psb'         	=> '/var/www/psb',
-  'enp'         	=> '/var/www/enp',
-  'll'          	=> '/var/www/ll',
-  'lldev'          	=> '/var/www/lldev',
-  'utils'       	=> '/var/www/utils/magento',
 );
-
