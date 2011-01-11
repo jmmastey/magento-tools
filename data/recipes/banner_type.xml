@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--@docstring Enterprise Banner Type / Location@-->
+<config>
+  <global>
+    <enterprise>
+      <banner>
+        <types>
+          <%type_handle%>%type_name%</%type_handle%>
+        </types>
+      </banner>
+    </enterprise>
+  </global>
+</config>
