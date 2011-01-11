@@ -79,3 +79,12 @@ function set_config_data($path, $value) {
 
     return mysql_affected_rows();
 }
+
+function db_load_file($file_path) {
+    global $db_config_array;
+
+    $username = $db_config_array['username'];
+    $password = $db_config_array['password'];
+    $dbname = $db_config_array['dbname'];
+    `mysql -u $username --password=$password $dbname < $file_path`;
+}

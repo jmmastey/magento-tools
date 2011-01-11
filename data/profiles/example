@@ -30,4 +30,5 @@ $profile = array(
   ),
   'delete_designs' => true,
   'cache_all' => false,
+  'sql' => array('example.sql'),
 );

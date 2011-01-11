@@ -15,18 +15,25 @@
 require_once("lib/base.php");
 require_once("lib/db.php");
 
-
-print "\nStore profiles\n";
-$profiles = explode("\n", `ls $support_dir/profiles`);
-foreach($profiles as $profile) {
-    printf("%-10s\n", $profile);
+if($_SERVER['argc'] == 2) {
+    $key = $_SERVER['argv'][1];
 }
-print "\n";
 
-$default = basename($magento);
-if(!in_array($default, $profiles)) { $default = null; }
 
-$key = user_array_choice("Select a profile to load for this store", $profiles, $default);
+if(!$key) {
+    print "\nStore profiles\n";
+    $profiles = explode("\n", `ls $support_dir/profiles`);
+    foreach($profiles as $profile) {
+        printf("%-10s\n", $profile);
+    }
+    print "\n";
+
+    $default = basename($magento);
+    if(!in_array($default, $profiles)) { $default = null; }
+
+    $key = user_array_choice("Select a profile to load for this store", $profiles, $default);
+}
+
 require_once("$support_dir/profiles/$key");
 
 print "Loading site profile for $key.\n";
@@ -62,6 +69,7 @@ if(isset($profile['cache_all'])) {
     $query_stack[] = "update core_cache_option set value = $on";
 }
 
+print "Running profile transactions.\n";
 start_db_transaction();
 $query = "";
 try {
@@ -76,3 +84,12 @@ try {
     print_error("There was an error during the database commit (".$e->getMessage()."). Couldn't load site profile.");
 }
 
+if(isset($profile['sql'])) {
+    print "Running profile SQL loaders.\n";
+    foreach($profile['sql'] as $file) {
+        if(!file_exists("$support_dir/profiles/$file")) { continue; }
+        db_load_file("$support_dir/profiles/$file");
+        print "  Loaded $file.\n";
+    }
+    print "  Done.\n";
+}
