@@ -5,7 +5,7 @@
     <jobs>
       <%cronjob_name%>
         <schedule>
-          <cron_expr>%frequency%</cron_expr>
+          <cron_expr>%frequency__m_h_dom_mon_dow%</cron_expr>
         </schedule>
         <run>
           <model>%cron_target%::%cron_method%</model>
