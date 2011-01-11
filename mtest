@@ -13,4 +13,6 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 init_magento();
 
-print date("Y-m-d H:i:s", strtotime("-0 minutes")); 
+print date("Y-m-d H:i:s"); 
+print "\n";
+print date("Y-m-d H:i:s", strtotime("tomorrow 9am pst")); 

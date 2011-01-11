@@ -1,3 +1,4 @@
 data/profiles/*
 !data/profiles/example*
 mtest
+data/cached-modules.txt
