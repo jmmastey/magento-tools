@@ -2,10 +2,10 @@
 
 // site profiles, used to load default data into the database for a site
 $profile = array(
-  'description' => 'lilluxe.com',
+  'description' => 'siteaddress.com',
   'config' => array(
-    'web/unsecure/base_url' => 'http://ll.transmogrified.com/',
-    'web/secure/base_url' => 'http://ll.transmogrified.com/',
+    'web/unsecure/base_url' => 'http://example.localdomain.com/',
+    'web/secure/base_url' => 'http://example.localdomain.com/',
 
     'payment/checkmo/active' => 1,
     'payment/authorizenet/test' => 1,
