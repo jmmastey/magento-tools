@@ -1,0 +1,5 @@
+<?php
+$email = "youremail@gmail.com";
+$author = "yourname <$email>";
+$company = "ABC";
+$default_path = "/path/to/some/magento/project";

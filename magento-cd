@@ -11,8 +11,10 @@
 try {
     require_once("lib/base.php"); 
     require_once("$support_dir/cd-paths.php"); 
+    require_once("$support_dir/defaults.php"); 
 } catch( Exception $e ) {
     require_once("$support_dir/cd-paths.php"); 
+    require_once("$support_dir/defaults.php"); 
     $magento    = $default_path;
     $theme      = trim(`cd $default_path; magento-theme`);
 }

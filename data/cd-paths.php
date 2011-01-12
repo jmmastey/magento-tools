@@ -1,9 +1,5 @@
 <?php
 
-// use this as $magento path if we can't find the proper magento path
-// TODO: this needs to be refactored out
-$default_path       = "/var/www/ll";
-
 // places where projects may exist
 $project_paths      = array(
     "/var/www", "/var/www/utils"
