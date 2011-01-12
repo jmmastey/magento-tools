@@ -6,7 +6,7 @@
     <resources>
       <%module_lower%_setup>
         <setup>
-          <module>%module%</module>
+          <module>%company%_%module%</module>
           <class>%setup_full_classname%</class>
         </setup>
         <connection>
