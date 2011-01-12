@@ -129,7 +129,15 @@ function find_path($target, $search, $trim = null, $return_count = false, $use_f
         throw new Exception("Couldn't find target dir $target in $search");
     }
 
-    $result = str_replace($trim, "", array_shift($res));
+    // this is a bad place for this, but prefer core over other paths
+    $result = array_shift($res);
+    foreach($res as $r) {
+        if(false !== strpos($r, "/core")) {
+            $result = $r;
+        }
+    }
+
+    $result = str_replace($trim, "", $result);
     return $result;
 }
 
