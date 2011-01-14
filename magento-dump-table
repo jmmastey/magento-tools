@@ -22,5 +22,10 @@ if(!mysql_num_rows($res)) {
 }
 
 while($row = mysql_fetch_assoc($res)) {
+    if(!isset($headers)) {
+        $headers = true;
+        $keys = array_keys($row);
+        print "\"".implode("\",\"", $keys)."\"\n";
+    }
     print "\"".implode("\",\"", $row)."\"\n";
 }
