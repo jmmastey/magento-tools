@@ -23,6 +23,7 @@ select count(*) entries, oi.sku, oi.product_id, oi.name,
     (case when st.value = 1 then 'Enabled' else 'Disabled' end) enabled,
     group_concat(distinct ccev.value) event_names
   from sales_flat_order_item oi
+    join sales_flat_order o on oi.order_id = o.entity_id
     join catalog_product_flat_1 cp on cp.entity_id = oi.product_id
     join eav_attribute_set ast on ast.attribute_set_id = cp.attribute_set_id
     left join purchase_product_supplier pps on pps.pps_product_id = oi.product_id
@@ -33,6 +34,7 @@ select count(*) entries, oi.sku, oi.product_id, oi.name,
     left join catalog_category_entity cce on cce.entity_id = ccp.category_id
     left join catalog_category_entity_varchar ccev on ccev.entity_id = ccp.category_id
   where
+    o.status != 'canceled' and
     cpi.customer_group_id = 0 and
     cpi.website_id = 1 and
     cpi.tax_class_id = 2 and
