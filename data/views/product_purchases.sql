@@ -7,7 +7,7 @@ select sku,
   group by sku;
 
 create or replace view product_purchase_omnibus as
-select count(*) entries, oi.sku, oi.product_id, oi.name,
+select count(*) entries, cp.sku, oi.product_id, oi.name,
     sum(cast(qty_ordered-qty_refunded-qty_canceled as decimal)) ordered,
     sum(cast(qty_ordered as decimal)) base_ordered,
     ps.sup_name vendor, oi.product_type,
