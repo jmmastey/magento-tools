@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+//
+// Connect to the database
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+require_once("lib/db.php"); 
+
+echo "mysql -h {$db_config_array['host']} -u {$db_config_array['username']} --password={$db_config_array['password']} {$db_config_array['dbname']}";
