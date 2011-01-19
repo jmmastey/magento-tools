@@ -22,7 +22,7 @@ if($_SERVER['argc'] == 2) {
 
 if(!$key) {
     print "\nStore profiles\n";
-    $profiles = explode("\n", `ls $support_dir/profiles`);
+    $profiles = explode("\n", `ls $support_dir/profiles | grep -v .sql`);
     foreach($profiles as $profile) {
         printf("%-10s\n", $profile);
     }
