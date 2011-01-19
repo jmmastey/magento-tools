@@ -6,6 +6,15 @@ select sku,
   where product_type = 'simple'
   group by sku;
 
+create or replace view product_purchases_with_date as
+select cpe.sku sku, oi.product_type product_type,
+    cast(sum(qty_ordered-qty_canceled) as decimal) qty,
+    cast(oi.created_at as date) dt
+  from sales_flat_order_item oi
+  join catalog_product_entity cpe on cpe.entity_id = oi.product_id
+  group by cpe.sku, product_type, cast(oi.created_at as date)
+  order by sku, dt;
+
 create or replace view product_purchase_omnibus as
 select count(*) entries, cp.sku, oi.product_id, oi.name,
     sum(cast(qty_ordered-qty_refunded-qty_canceled as decimal)) ordered,
