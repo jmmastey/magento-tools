@@ -1,0 +1,62 @@
+#!/usr/bin/ruby
+
+require 'hpricot'
+require 'open-uri'
+require 'net/http'
+require 'date'
+require 'zlib'
+
+def search_for_assets(node, attr)
+  assets = []
+  @doc.search(node).each do |node|
+    assets << full_path_to(node[attr]) if node[attr]
+  end
+
+  assets
+end
+
+def full_path_to asset
+  return asset if /^http/.match asset
+  return @base_url+asset if /^\//.match asset
+  @dir_url+asset
+end
+
+def properties_for asset
+  headers = { "accept-encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3" }
+  url = URI.parse asset
+  res = Net::HTTP.start(url.host, url.port) {|http|
+    http.get(asset, headers)
+  }
+
+  headers = res.to_hash
+
+  gzipped = headers['content-encoding'] && headers['content-encoding'][0] == "gzip"
+  #content = gzipped ? Zlib::Inflate.inflate(res.read_body) : res.body
+  content = gzipped ? Zlib::GzipReader.new(StringIO.new(res.body)).read : res.body
+
+  {
+    :url => asset,
+    :response => res,
+    :code => res.code,
+    :expires => (headers["expires"] && Date.parse(headers["expires"][0]).to_s || nil),
+    :mime => res.header.content_type,
+    :gzipped => gzipped,
+    :full_length => content.length,
+    :compressed_length => (headers["content-length"] && headers["content-length"][0] || res.body.length),
+    :etag => (headers["etag"] && headers["etag"][0].gsub('"',"") || nil),
+  }
+end
+
+assets = []
+
+@url = "http://psbrooklyn.com"
+@base_url = /http(s)?:\/\/[^\/\?]+/.match(@url).to_s
+@dir_url = @url[0..@url.rindex('/')]
+@doc = Hpricot(open(@url))
+
+assets += search_for_assets("script", :src)
+assets += search_for_assets("img", :src)
+assets += search_for_assets("link", :href)
+assets += search_for_assets("style", :href)
+
+assets.each { |a| p properties_for a }
