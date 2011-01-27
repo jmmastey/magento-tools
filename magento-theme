@@ -37,3 +37,14 @@ if(!$row['value']) {
 }
 
 print "{$row['value']}\n";
+
+function putdocs() {
+    return array(
+        "Return the name of the currently configured theme.",
+        "Usage: magento-theme",
+        "", "It is possible to have multiple active themes, so we will use",
+        "the current skin as a reasonable proxy for this information. Note that",
+        "it is also possible to designate seasonal designs, which are not",
+        "accounted for by this utility.",
+    );
+}

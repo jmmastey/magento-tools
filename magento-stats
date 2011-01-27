@@ -26,3 +26,10 @@ while($row = mysql_fetch_array($res)) {
     $kbytes = $row['data_length']/1024;
     printf($format_string, $row["table_name"], $row["table_rows"], "{$kbytes}k");
 }
+
+function putdocs() {
+    return array(
+        "List critical stats from the database.",
+        "Usage: magento-stats",
+    );
+}

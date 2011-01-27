@@ -19,7 +19,6 @@ if($_SERVER['argc'] == 2) {
     $key = $_SERVER['argv'][1];
 }
 
-
 if(!$key) {
     print "\nStore profiles\n";
     $profiles = explode("\n", `ls $support_dir/profiles | grep -v .sql`);
@@ -92,4 +91,14 @@ if(isset($profile['sql'])) {
         print "  Loaded $file.\n";
     }
     print "  Done.\n";
+}
+
+function putdocs() {
+    return array(
+        "Load profile data for an installation, including DB params.",
+        "Usage: magento-profile [KEY]",
+        "", "Useful for after you load a DB dump from a production system and",
+        "need to change the hostname and payment info from that dump. Also",
+        "supports .sql files as loaders for haphazard data.",
+    );
 }

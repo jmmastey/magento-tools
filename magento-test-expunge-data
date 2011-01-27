@@ -106,3 +106,10 @@ try {
     rollback_db_transaction();
     print "Failed to expunge test data.\n";
 }
+
+function putdocs() {
+    return array(
+        "Clear all test data from the system.",
+        "Usage: magento-test-expunge-data",
+    );
+}

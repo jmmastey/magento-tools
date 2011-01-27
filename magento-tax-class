@@ -69,3 +69,11 @@ function add_tax_class($vars) {
     $vars->classes[$type][rand(5000,9999)] = $name;
     array_push($vars->query_stack, "insert into tax_class (class_name, class_type) values ('$name', '$type')");
 }
+
+function putdocs() {
+    require_once("lib/taxes.php"); 
+    print_error("List magento tax classes and interactively allow the user to modify that list of classes.\n");
+    print_error("Usage: magento-tax-class\n");
+    print_error("\n\n");
+    print_graph(true);
+}

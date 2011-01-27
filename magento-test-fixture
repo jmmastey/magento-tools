@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 //
-// Clear all test data from the system.
+// Create nonce data to test the system at load.
 //
 // @author      Joseph Mastey <joseph.mastey@gmail.com>
 // @author      $Author$
@@ -15,8 +15,7 @@ session_start();
 init_magento();
 
 if(2 > $_SERVER['argc']) {
-    print "usage: magento-test-fixture FIXTURE...\n";
-    exit;
+    print_help();
 }
 
 // load each fixture
@@ -517,4 +516,11 @@ function process_order($entry, $context, $entity) {
         $oitem->setProductId($product->getId());
         $entity->addItem($oitem);
     }
+}
+
+function putdocs() {
+    return array(
+        "Create nonce data to test the system at load.",
+        "Usage: magento-test-fixture FIXTURE",
+    );
 }

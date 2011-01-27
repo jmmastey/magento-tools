@@ -83,3 +83,11 @@ function add_tax_class($vars) {
                                         (select tax_calculation_rule_id, $customer_type, $product_type from tax_calculation_rule where code = '$code'");
     }
 }
+
+function putdocs() {
+    require_once("lib/taxes.php"); 
+    print_error("List magento tax rules and interactively allow the user to modify that list of rules.\n");
+    print_error("Usage: magento-tax-rule\n");
+    print_error("\n\n");
+    print_graph(true);
+}

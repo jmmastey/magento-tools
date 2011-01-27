@@ -12,3 +12,10 @@ require_once("lib/base.php");
 init_magento();
 
 print Mage::getVersion()."\n";
+
+function putdocs() {
+    return array(
+        "Return the current code version of Magento",
+        "Usage: magento-version",
+    );
+}

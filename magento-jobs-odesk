@@ -8,7 +8,7 @@ require 'optparse'
 
 options = {}
 optparse = OptionParser.new(:posix) do |opts|
-  opts.banner = "Usage: magento-craigslist-jobs [options]"
+  opts.banner = "Check oDesk for jobs relating to Magento.\nUsage: magento-jobs-odesk [options]"
 
   options[:days] = 7
   opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|

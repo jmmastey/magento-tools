@@ -58,3 +58,11 @@ function delete_tax_rate($vars) {
     unset($vars->rates[$code]);
     array_push($vars->query_stack, "delete from tax_calculation_rate where code = '$code'");
 }
+
+function putdocs() {
+    require_once("lib/taxes.php"); 
+    print_error("List magento tax rates and interactively allow the user to modify that list of rates.\n");
+    print_error("Usage: magento-tax-rate\n");
+    print_error("\n\n");
+    print_graph(true);
+}

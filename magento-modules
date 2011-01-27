@@ -54,3 +54,13 @@ foreach($output as $code_pool => $companies) {
 
     }
 }
+
+function putdocs() {
+    return array(
+        "Display a list of modules in the various codepools of Magento.",
+        "Usage: magento-modules [CODEPOOL] [SIMPLE]",
+        "","Codepool may be one of [local|core|community]",
+        "If simple behavior is enabled, a newline delimited list of modules will be",
+        "printed without any headers.",
+    );
+}

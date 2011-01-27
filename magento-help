@@ -8,6 +8,8 @@
 // @version     $Id$
 // @copyright	Copyright (c) JRM Ventures LLC, 2010-
 
+require_once("lib/base.php");
+
 $basedir    = dirname(__FILE__);
 $commands   = explode("\n", `ls $basedir | grep magento | sed -e "s/magento-//"`);
 
@@ -27,3 +29,10 @@ if(in_array($cmd, $commands)) {
 } else {
     print "No help found because you're just making up pretend commands. So sad.\n";
 }   
+
+function putdocs() {
+    return array(
+        "Get a list of commands, and information about each command",
+        "Usage: magento-help COMMAND",
+    );
+}

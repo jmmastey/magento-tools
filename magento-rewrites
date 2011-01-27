@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 //
-// Get magento version
+// Get a list of all rewritten classes.
 //
 // @author      Joseph Mastey <joseph.mastey@gmail.com>
 // @author      $Author$
@@ -23,4 +23,11 @@ foreach($types as $type) {
         }
     }
     print "\n\n";
+}
+
+function putdocs() {
+    return array(
+        "Get a list of all rewritten classes in the Magento installation",
+        "Usage: magento-rewrites",
+    );
 }

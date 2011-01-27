@@ -1,9 +1,7 @@
 #!/usr/bin/env php
 <?php
 //
-// Magento Controller Creator
-//
-// Creates a new class file w/ appropriately substituted values
+// Create a setup file for a plugin
 //
 // @author    Joseph Mastey <joseph.mastey@gmail.com>
 // @author    $Author$
@@ -38,3 +36,10 @@ if(file_exists("$target/$target_filename")) {
 
 `mkdir -p $target`;
 `cp $support_dir/setup/base.php $target/$target_filename`;
+
+function putdocs() {
+    return array(
+        "Create setup files for a module, including a setup class and mysql-* install file",
+        "Usage: magento-plugin-setup [MODULE]",
+    );
+}

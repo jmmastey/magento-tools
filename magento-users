@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
 //
-// List magento tax rates and interactively allow the 
-// user to modify that list of rates.
+// List magento administrative users and allow the user to modify
+// that list interactively and save changes as a batch.
 //
 // @author      Joseph Mastey <joseph.mastey@gmail.com>
 // @author      $Author$
@@ -82,4 +82,12 @@ function delete_user($vars) {
 
     unset($vars->users[$code]);
     array_push($vars->query_stack, "delete from admin_user where username = '$code'");
+}
+
+function putdocs() {
+    return array(
+        "List magento administrative users and allow the user to modify",
+        "that list of users interactively.",
+        "Usage: magento-users",
+    );
 }

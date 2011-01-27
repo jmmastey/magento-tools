@@ -11,6 +11,14 @@
 # @copyright    Copyright (c) JRM Ventures LLC, 2009-
 #
 
+if [[ $# == 1 ]]; then
+  if [[ "-h" == $1 ]] || [[ "--help" == $1 ]]; then
+    echo "Recursively fix permissions on a Magento directory."
+    echo "Usage: magento-permissions [CHOWN_OWNER]"
+    exit
+  fi
+fi
+
 if [ ! -f "LICENSE.txt" ]; then
     print "This doesn't look like the magento directory. Aborting."
     exit 1

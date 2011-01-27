@@ -16,3 +16,10 @@ $val    = (int)get_config_data($path)? 0 : 1;
 
 print "Turning ".($val?"ON":"OFF")." template hints.\n";
 set_config_data($path, $val);
+
+function putdocs() {
+    return array(
+        "Turn on and off template hints for the frontend.",
+        "Usage: magento-test-togglehints",
+    );
+}

@@ -1,7 +1,7 @@
 <?php
 
-function print_graph() {
-    print "
+function print_graph($use_error = false) {
+    $str = "
 ===============================================
 | MAGENTO TAXES                               |
 ===============================================
@@ -24,6 +24,12 @@ function print_graph() {
 |                                             |
 ===============================================
 ";
+
+    if($use_error) {
+        print_error($str);
+    } else {
+        print($str);
+    }
 }
 
 

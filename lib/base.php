@@ -48,8 +48,11 @@ $magento        = find_magento();
 $magento_init   = false;
 
 // helpdoc system
-if(isset($_SERVER['argv'][1]) && 0 == strcmp($_SERVER['argv'][1], "--help")) {
-    print_help();
+if(isset($_SERVER['argv'][1])) {
+    $arg = $_SERVER['argv'][1];
+    if(0 == strcmp($arg, "--help") || 0 == strcmp($arg, "-h")) {
+        print_help();
+    }
 }
 
 function init_magento($store_code = 'default', $scope_code = 'store') {

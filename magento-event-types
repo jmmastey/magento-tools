@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 //
-// Get magento version
+// Get a list of entities that fire default events.
 //
 // @author 		Joseph Mastey <joseph.mastey@gmail.com>
 // @author      $Author$
@@ -20,4 +20,11 @@ foreach($results as $result) {
 
     list($file, $line, $type) = explode(":", $result);
     printf("%-100s\t%-4s\t%s\n", $file, $line, $type);
+}
+
+function putdocs() {
+    return array(
+        "Get a list of entities in Magento that fire default Magento events",
+        "Usage: magento-event-types",
+    );
 }

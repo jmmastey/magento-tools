@@ -81,3 +81,10 @@ function toggle_all_caches($vars) {
         array_push($vars->query_stack, "update core_cache_option set value = $tval where code = '$code'");
     }
 }
+
+function putdocs() {
+    return array(
+        "Toggle on and off the caches for this site.",
+        "Usage: magento-test-cache",
+    );
+}

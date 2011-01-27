@@ -1,7 +1,8 @@
 #!/usr/bin/env php
 <?php
 //
-// Creates necessary directories for a new plugin, with empty values as appropriate.
+// Creates necessary directories for a new plugin, with empty values as
+// appropriate.
 //
 // @author      Joseph Mastey <joseph.mastey@gmail.com>
 // @author      $Author$
@@ -49,3 +50,12 @@ system("find \"$code_dir\" -type d -exec chmod 0755 {} \;");
 system("find \"$code_dir\" -type f -exec chmod 0775 {} \;");
 print "...Done! You'll probably want tighter permissions when you deploy to production.\n";
 print "Finished creating the plugin. Make sure to install it and add it to SVN. Have a nice day! :)\n";
+
+function putdocs() {
+    return array(
+        "Create a new module with the necessary default files.",
+        "Usage: magento-module",
+        "","Only the necessary files will be created for the module. Use magento-config,",
+        "magento-model, etc to create the actual functionality.",
+    );
+}
