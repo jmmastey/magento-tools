@@ -124,5 +124,17 @@ print `pwd`;
 
 
 function putdocs() {
-    print "foo?";
+    global $support_dir;
+    require_once("$support_dir/cd-paths.php"); 
+
+    return array(
+    "Load a path in the current Magento installation. Use tab completion to see available paths.",
+    "Usage: mcd SHORTCUT", "",
+    "Shortcuts may be specified in data/cd-paths, or can be one of the following:",
+    "* A project in the project-dir specified in your profile\n\t(project -> /var/www/project)",
+    "* A complete module name\n\t(core -> app/code/core/Mage/Core, loaded from [core,community,local])",
+    "* A partial module name from the local codepool\n\t(foo -> app/code/local/Company/FooBarModule)",
+    "* A class handle for a block, model or helper\n\t(core/template -> app/code/Core/Mage/Core/Block)",
+    "", "Known Shortcuts:",
+    ) + array_keys($cd_paths);
 }

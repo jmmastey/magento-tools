@@ -13,11 +13,7 @@ require_once("lib/xml.php");
 
 switch(count($_SERVER['argv'])) {
     case 1:
-        print "Usage: magento-config pattern [module] [options]\n\n";
-        print "Available patterns:\n";
-        print_recipes();
-        print "\n";
-        exit;
+        print_help();
     case 2:
         $pattern        = $_SERVER['argv'][1];
         $module         = null;
@@ -96,6 +92,13 @@ function print_recipes() {
 
         $description = trim(`grep "docstring" $support_dir/recipes/$recipe.xml | sed -e "s/.*docstring \([^@]*\)@.*/\\1/"`);
         if(!$description) { $description = ""; }
-        printf("  %-25s\t%s\n", $recipe, $description);
+        print_error(sprintf("  %-25s\t%s\n", $recipe, $description));
     }
+}
+
+function putdocs() {
+    print_error("Usage: magento-config pattern [module] [options]\n\n");
+    print_error("Available patterns:\n");
+    print_recipes();
+    print_error("\n");
 }

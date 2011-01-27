@@ -22,8 +22,8 @@ switch($_SERVER['argc']) {
     $template   = $_SERVER['argv'][2];
     break;
   default:
-    print "Usage: magento-controller module/controller_path [template]\n\n";
-    exit;
+    print_help();
+    break;
 }
 
 print "Creating controller for $handle\n";
@@ -60,4 +60,19 @@ try {
 
 } catch( Exception $e ) {
     print_error("{$e->getMessage()}\n");
+}
+
+function templates() {
+    global $support_dir;
+    return explode("\n",trim(`ls $support_dir/controller | sed -e "s/.php//"`));
+}
+
+function putdocs() {
+    $s = array(
+      "Create a new Magento controller in the specified module",
+      "Usage: magento-controller module/controller_path [template]", "",
+      "Valid Templates:"
+    );
+    foreach(templates() as $tpl) { $s[] = $tpl; }
+    return $s;
 }

@@ -15,17 +15,29 @@ if(!isset($_SERVER['argc'])) {
     $_SERVER['argv'] = $_GET;
 }
 
-// helpdoc system
-if(isset($_SERVER['argv'][1]) && 0 == strcmp($_SERVER['argv'][1], "--help")) {
+// print something on stderr
+function print_error($str) {
+    $fp = fopen("php://stderr", "w+");
+    fwrite($fp, $str);
+    fclose($fp);
+}
+
+function print_help() {
     if(function_exists("putdocs")) {
-        putdocs();
-        print "\n";
+        $res = putdocs();
+        if(is_array($res)) {
+            foreach($res as $line) {
+                print_error($line."\n");
+            }
+        }
+        print_error("\n");
     } else {
-        print "No docs available for this function. Yell at the developer. Sorry.\n";
+        print_error("No docs available for this function. Yell at the developer. Sorry.\n");
     }
 
     exit;
 }
+
 
 require_once(dirname(__FILE__)."/functions.php");
 $support_dir    = dirname(__FILE__)."/../data";
@@ -34,6 +46,11 @@ require_once("$support_dir/defaults.php");
 // @throws Exception we're not inside of magento
 $magento        = find_magento();
 $magento_init   = false;
+
+// helpdoc system
+if(isset($_SERVER['argv'][1]) && 0 == strcmp($_SERVER['argv'][1], "--help")) {
+    print_help();
+}
 
 function init_magento($store_code = 'default', $scope_code = 'store') {
     global $magento, $magento_init;

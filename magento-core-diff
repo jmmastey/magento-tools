@@ -28,3 +28,13 @@ if(!file_exists($clean_dir)) {
 }
 
 passthru("diff --exclude='.svn' -r $clean_dir/app/code/core $magento/app/code/core");
+
+function putdocs() {
+    return array(
+        "Does a recursive comparison between the current installation's core files",
+        "and a clean copy of Magento to check for heretical changes to them. You need",
+        "to have downloaded a copy of the Magento version matching this one to do",
+        "the diff.",
+        "Usage: magento-core-diff",
+    );
+}

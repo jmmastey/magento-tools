@@ -28,3 +28,10 @@ foreach($email_templates[0] as $template => $params) {
     printf("%-50s\t%-6s\t%s\t%-35s\t%s\n", $template, $loaded, $params->type, $params->file, $params->label);
 }
 print "\n";
+
+function putdocs() {
+    return array(
+        "List all Magento emails, and whether they have been loaded into the database before.",
+        "Usage: magento-email",
+    );
+}

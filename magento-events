@@ -10,7 +10,6 @@
 
 require_once("lib/base.php"); 
 
-
 $results    = `ack Mage::dispatchEvent $magento 2>/dev/null | grep -v "app/code/local" | grep -v "downloader/pearlib"`;
 $results    = explode("\n", $results);
 print_error(sprintf("%-100s\t%-4s\t%s\n", "FILE", "LINE", "EVENT"));
@@ -56,4 +55,13 @@ function get_next_line_event($file, $line, $magento) {
     }
     print "Found unmatcheable event:\n";
     var_dump($cnt);exit;
+}
+
+function putdocs() {
+    return array(
+        "Find and list all Magento events fired via dispatchEvent, including",
+        "relevant line and file information. This may take a while as it scans",
+        "the entire magento installation.",
+        "Usage: magento-events",
+    );
 }

@@ -1,7 +1,8 @@
 #!/usr/bin/env php
 <?php
 //
-// List all Magento emails
+// Selectively create database entries for Magento's email
+// templates.
 //
 // @author 		Joseph Mastey <joseph.mastey@gmail.com>
 // @author      $Author$
@@ -86,4 +87,13 @@ foreach($to_load as $template => $load) {
 
     $templ_obj->save();
     print "Loaded $template into the database.\n";
+}
+
+function putdocs() {
+    return array(
+        "Selectively create database entries for Magento's transactional",
+        "emails. You will be prompted regarding which templates you want to",
+        "load in this fashion.",
+        "Usage: magento-email-create-templates",
+    );
 }

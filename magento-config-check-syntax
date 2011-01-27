@@ -17,8 +17,8 @@ switch(count($_SERVER['argv'])) {
         $module         = $_SERVER['argv'][1];
         break;
     default:                                                                                         
-        print "Usage: magento-config-syntax module\n";
-        exit;
+        print_help();
+        break;
 }
 
 # attempt to auto-detect a module
@@ -42,4 +42,11 @@ try {
     print "\nAll files seem to be valid XML.\n";
 } catch( Exception $em_all ) {
     print_error($em_all->getMessage()."\n");
+}
+
+function putdocs() {
+    return array(
+        "Check to make sure that a module's configuration files are valid XML",
+        "Usage: magento-config-check-syntax module",
+    );
 }

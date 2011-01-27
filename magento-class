@@ -32,8 +32,7 @@ switch($_SERVER['argc']) {
     $template   = $_SERVER['argv'][4];
     break;
   default:
-    print "Usage: magento-class type module/long_model_name [extends_model_name] [template]\n\n";
-    exit;
+    print_help();
 }
 
 if(!preg_match("#^[a-z]+/[a-z_0-9]+$#", $handle)) {
@@ -95,4 +94,11 @@ try {
     }
 } catch( Exception $e ) {
     print_error("{$e->getMessage()}\n");
+}
+
+function putdocs() {
+    return array(
+    "Create a new Magento class file based on a type template",
+    "Usage: magento-class type module/long_model_name [extends_model_name] [template]",
+    );
 }

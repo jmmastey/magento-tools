@@ -183,13 +183,6 @@ function create_path($path) {
     @mkdir($path, 0777, true);
 }
 
-// print something on stderr
-function print_error($str) {
-    $fp = fopen("php://stderr", "w+");
-    fwrite($fp, $str);
-    fclose($fp);
-}
-
 function parse_opts($args) {
     $opts = array();
     foreach($args as $arg) {
