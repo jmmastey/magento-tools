@@ -11,7 +11,7 @@
 require_once("lib/base.php");
 
 $basedir    = dirname(__FILE__);
-$commands   = explode("\n", `ls $basedir | grep magento | sed -e "s/magento-//"`);
+$commands   = explode("\n", `ls $basedir | grep "magento-" | sed -e "s/magento-//"`);
 
 if(1 >= $_SERVER['argc']) {
     print "\n";

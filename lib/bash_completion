@@ -118,3 +118,15 @@ _magento_help()
 
 }
 complete -F _magento_help magento-help
+
+_magento()
+{
+	  local cur words
+	  COMPREPLY=()
+
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    words=`ls $MAGENTO_TOOLS_PATH | grep "magento-" | sed -e "s/magento-//"`
+    COMPREPLY=( $(compgen -W "${words}" -- "$cur") )
+    return 0
+}
+complete -F _magento magento m

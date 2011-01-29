@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+//
+// Dispatch to other Magento
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+
+if(2 > $_SERVER['argc']) {
+    print_help();
+}
+
+$command = $_SERVER['argv'][1];
+array_shift($_SERVER['argv']);
+array_shift($_SERVER['argv']);
+$args = implode(" ", $_SERVER['argv']);
+
+print `magento-$command $args`;
+
+function putdocs() {
+	print_error(`magento-help`);
+}
