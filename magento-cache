@@ -85,6 +85,6 @@ function toggle_all_caches($vars) {
 function putdocs() {
     return array(
         "Toggle on and off the caches for this site.",
-        "Usage: magento-test-cache",
+        "Usage: magento-cache",
     );
 }
