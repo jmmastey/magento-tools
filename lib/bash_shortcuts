@@ -6,7 +6,7 @@
 function magento-model() { magento class model "$@"; }
 function magento-block() { magento class block "$@"; }
 function magento-helper() { magento class helper "$@"; }
-function mcd { cd $(magento cd $@); }
+function mcd { cd $(magento-cd $@); }
 function mdb { $(magento db); }
 alias mc='magento config'                         
 alias m='magento'                         
