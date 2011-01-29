@@ -25,24 +25,31 @@ function handle_to_class( $handle, $type ) {
     return "{$company}_{$module}_{$type}_{$class}";
 }//end handle_to_class
 
-function get_magento_class($handle, $type) {
+// keep in mind that this may be called on not-yet-existant classes
+function get_magento_class($handle, $type, $manual = false) {
     init_magento();
 
-    switch($type) {
-        case 'block':
-            return Mage::getConfig()->getBlockClassName($handle);
-        case 'model':
-            return get_class(Mage::getModel($handle));
-        default:
-            // HACKS!
-            list( $module, $class ) = explode("/", $handle);  
-            list( $codepool, $company, $module )  =  explode("/", module_path($module));
-            $class = str_replace(" ", "_", ucwords(str_replace("_", " ", $class)));
-            $type = ucfirst($type);
-            return "{$company}_{$module}_{$type}_{$class}";
+    try {
+        switch($type) {
+            case 'block':
+                return Mage::getConfig()->getBlockClassName($handle);
+            case 'model':
+                return get_class(Mage::getModel($handle));
+            default:
+                throw new Exception("for the hell of it");
+        }
+    } catch(Exception $e) {
+        return _get_magento_class_manual($handle, $type);
     }
+}
 
-    throw new Exception("Not sure how to retrieve class.");
+// HACKS!
+function _get_magento_class_manual($handle, $type) {
+    list( $module, $class ) = explode("/", $handle);  
+    list( $codepool, $company, $module )  =  explode("/", module_path($module));
+    $class = str_replace(" ", "_", ucwords(str_replace("_", " ", $class)));
+    $type = ucfirst($type);
+    return "{$company}_{$module}_{$type}_{$class}";
 }
 
 // get the controller that a handle represents.

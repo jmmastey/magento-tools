@@ -94,6 +94,8 @@ try {
     }
 } catch( Exception $e ) {
     print_error("{$e->getMessage()}\n");
+    print_error("{$e->getTraceAsString()}\n");
+    print "Aborted class creation.";
 }
 
 function putdocs() {
