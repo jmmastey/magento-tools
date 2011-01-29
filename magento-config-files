@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+//
+// Find all config files in modules.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+init_magento();
+
+$all_files = array();
+$config = Mage::getConfig();
+$modules = $config->getNode("modules")->children();
+foreach($modules as $modName => $module) {
+    if(!$module->is("active")) {
+    	print_error("$modName isn't active.\n");
+        continue;
+    }
+    $configDir = $config->getModuleDir("etc", $modName);
+    $files = explode("\n", trim(`ls $configDir | grep xml`));
+    foreach($files as $file) {
+        if(!isset($all_files[$file])) {
+            $all_files[$file] = array();
+        }
+        $all_files[$file][] = $modName;
+    }
+}
+
+foreach($all_files as $file => $modules) {
+    print str_repeat("=",20)."  $file  ".str_repeat("=",20)."\n";
+    for($i = 0; $i < count($modules); $i++) {
+        printf("%-30s", $modules[$i]);
+        if($i && ($i%3 == 2)) {
+            print "\n";
+        }
+    }
+    print "\n\n";
+}

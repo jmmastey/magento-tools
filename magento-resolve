@@ -1,0 +1,43 @@
+#!/usr/bin/env php
+<?php
+//
+// Resolve a class handle
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+init_magento();
+
+if(2 != $_SERVER['argc']) {
+    print_help();
+    exit;
+}
+
+$handle = $_SERVER['argv'][1];
+$types = array("helper", "model", "block");
+$found = array();
+
+foreach($types as $type) {
+    try {
+        $class = Mage::getConfig()->getGroupedClassName($type, $handle);
+        if(class_exists($class)) {
+            $found[$type] = $class;
+        }
+    } catch(Exception $e) {
+        // foo!
+    }
+}
+
+foreach($found as $type => $class) {
+    print "$type: $class\n";
+}
+
+function putdocs() {
+    return array(
+        "Resolve a magento class handle into a classname.",
+        "Usage: magento-resolve HANDLE",
+    );
+}
