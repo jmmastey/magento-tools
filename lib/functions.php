@@ -88,6 +88,18 @@ function fuzzy_module_path($target) {
     return find_path($target, "$magento/app/code/local/*", "$magento/app/code/", false, true);
 }
 
+// get something that looks remotely like the path to something
+// else. take no comfort in this.
+function horrible_path($target) {
+    $magento = magento_path();
+
+    $opts = `find $magento/app/code | grep -v .svn | grep -i "$target$"`;
+    if(!$opts) {
+        throw new Exception("Couldn't find anything even close to that...");
+    }
+
+    return explode("\n", trim($opts));
+}
 
 // check if a module has already been created
 function module_exists($target) {

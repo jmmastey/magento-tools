@@ -25,7 +25,7 @@ if(2 != $_SERVER['argc']) {
   exit;
 }
 
-$target = $_SERVER['argv'][1];
+$target     = $_SERVER['argv'][1];
 
 // it's a project!
 if(is_array($project_paths) && count($project_paths)) {
@@ -108,7 +108,6 @@ try {
   // it wasn't a model handle. keep moving.
 }
 
-
 // it's a really poorly typed module handle!
 try {
   $target_path = fuzzy_module_path($target);
@@ -117,6 +116,29 @@ try {
   exit;
 } catch( Exception $e ) {
   // it wasn't a poorly typed module name. keep moving.
+}
+
+// it's a really, incredibly sloppy file path...
+try {
+  if(!preg_match("#([a-zA-Z]+[_\ \\\\/]+)+#", $target)) {
+    throw new Exception("doesn't look right.");
+  }
+
+  $modpath = str_replace(array("_", " ", "\\"), "/", $target);
+  $target_paths = horrible_path($modpath);
+  print_error("You've got to be kidding... That's not even a real thing.\n");
+
+  if(count($target_paths) > 1) {
+      print_error("For future reference, here are some real things:\n");
+      foreach($target_paths as $path) {
+        print_error("  $path\n");
+      }
+  }
+
+  print array_shift($target_paths);
+  exit;
+} catch( Exception $e ) {
+  // what in the world?
 }
 
 print_error("Couldn't figure out where $target is. Meditate on uncertainty and try again.\n");
@@ -134,7 +156,8 @@ function putdocs() {
     "* A project in the project-dir specified in your profile\n\t(project -> /var/www/project)",
     "* A complete module name\n\t(core -> app/code/core/Mage/Core, loaded from [core,community,local])",
     "* A partial module name from the local codepool\n\t(foo -> app/code/local/Company/FooBarModule)",
-    "* A class handle for a block, model or helper\n\t(core/template -> app/code/Core/Mage/Core/Block)",
+    "* A class handle for a block, model or helper\n\t(core/template -> app/code/core/Mage/Core/Block)",
+    "* An incredibly lazily typed path inside of app/code\n\t(sales/order/pdf -> app/code/core/Mage/Sales/Order/Pdf)",
     "", "Known Shortcuts:",
     ) + array_keys($cd_paths);
 }
