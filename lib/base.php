@@ -40,6 +40,7 @@ function print_help() {
 
 
 require_once(dirname(__FILE__)."/functions.php");
+$lib_dir    = dirname(__FILE__);
 $support_dir    = dirname(__FILE__)."/../data";
 require_once("$support_dir/defaults.php");
 
