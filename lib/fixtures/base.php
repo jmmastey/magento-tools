@@ -86,8 +86,10 @@ function get_fixture_data($type) {
 
 function iterate_numeric($context) {
     $ct = $context->entry['iterate'];
+    $tithe = $ct/10;
     for($i = 0; $i < $ct; $i++) {
         save_record($context->entry, $context);
+        if($i%$tithe == 0) { print "."; }
     }
 }
 
