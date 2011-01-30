@@ -87,16 +87,17 @@ function get_fixture_data($type) {
 function iterate_numeric($context) {
     $ct = $context->entry['iterate'];
     $tithe = $ct/10;
+    print "    ";
     for($i = 0; $i < $ct; $i++) {
         save_record($context->entry, $context);
         if($i%$tithe == 0) { print "."; }
     }
+    print "\n\n";
 }
 
 function iterate_numeric_prompt($context) {
     $num = (int)user_text("    How many entries for $context->entry_title", null, "/^\d+$/");
     $context->entry['iterate'] = $num;
-    print "\n";
     iterate_numeric($context);
 }
 
