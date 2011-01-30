@@ -2,6 +2,14 @@
 
 // FIXTURE HELPER METHODS TO GENERATE DUMMY DATA
 
+function fixture_int() {
+    return rand(1,100);
+}
+
+function fixture_double() {
+    return rand(100,10000)/100.0;
+}
+
 function fixture_string($entry, $context) {
     return get_flw($context).get_flw($context);
 }

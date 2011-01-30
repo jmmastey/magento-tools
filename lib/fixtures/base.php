@@ -20,7 +20,17 @@ function load_fixture($fixture_name) {
             $iterator = $context->iterator;
             $iterator($context);
         }
+
+        // run post-actions (index updates et al)
+        if(isset($context->data['entity_type'])) {
+            $postFunc = "post_fixture_".$context->data['entity_type'];
+            if(function_exists($postFunc)) {
+                print "  running post-actions for $sec";
+                $postFunc();
+            }
+        }
     }
+
 }
 
 function get_entity($context) {

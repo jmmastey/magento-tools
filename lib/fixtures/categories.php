@@ -23,6 +23,10 @@ function fixture_toplevel_category() {
     return _category_id("2");
 }
 
+function fixture_visible_category() {
+    return _category_id("2,3");
+}
+
 function fixture_event_category() {
     $sqlst  = "select entity_id from catalog_category_entity where level in (2,3) and entity_id not in (select category_id from enterprise_catalogevent_event) order by rand() limit 1";
     $res    = mysql_query($sqlst);
@@ -76,3 +80,11 @@ function process_catalogevent($entry, $context, $entity) {
     }
 }
 
+function post_fixture_category() {
+    $sqlst = "select parent_id, count(*) ct from catalog_category_entity group by parent_id";
+    $res = mysql_query($sqlst);
+    while($row = mysql_fetch_array($res)) {
+        $sqlst = "update catalog_category_entity set children_count = {$row['ct']} where entity_id = {$row['parent_id']}";
+        mysql_query($sqlst);
+    }
+}

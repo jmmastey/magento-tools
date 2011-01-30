@@ -1,0 +1,68 @@
+# generates randomized products
+#
+# Status:
+#   1: Enabled
+#   2: Disabled
+#
+# Visibility:
+#   1: Not Visible
+#   2: Visible in Catalog
+#   3: Visible in Search
+#   4: Both
+#
+
+products:
+  entity: catalog/product
+  entity_type: catalog_product
+  base: &products_base
+    entity_type_id: fixture_entity_type
+    attribute_set_id: 4
+    type_id: simple
+    sku: fixture_string
+    has_options: 0
+    required_options: 0
+    created_at: ~
+    updated_at: ~
+    name: fixture_capsed_string
+    meta_title: fixture_sentence
+    meta_description: fixture_sentence
+    image: ~
+    small_image: ~
+    thumbnail: ~
+    url_key: fixture_url_key
+    url_path: fixture_url_path
+    custom_design: ~
+    page_layout: ~
+    image_label: ~
+    small_image_label: ~
+    gift_message_available: 2
+    price: fixture_double
+    special_price: ~
+    cost: ~
+    weight: 1.000
+    description: fixture_paragraph
+    short_description: fixture_sentence
+    meta_keyword: fixture_sentence
+    custom_layout_update: ~
+    special_from_date: ~
+    special_to_date: ~
+    news_from_date: ~
+    news_to_date: ~
+    custom_design_from: ~
+    custom_design_to: ~
+    status: 1
+    tax_class_id: fixture_tax_class
+    visibility: 4
+    enable_googlecheckout: 1
+    is_in_stock: 1
+    stock_id: 1
+    use_config_manage_stock: 1
+    qty: 100,
+    is_in_stock: 1
+    num_categories: 3
+    iterate: 1
+
+  entries:
+    simple_products:
+      <<: *products_base
+      iterate: numeric_prompt
