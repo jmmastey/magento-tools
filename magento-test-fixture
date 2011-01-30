@@ -291,6 +291,10 @@ function fixture_past_date() {
     return date("Y-m-d h:i:s", strtotime("-".rand(30,365)." days"));
 }
 
+function fixture_future_date() {
+    return date("Y-m-d h:i:s", strtotime("+".rand(30,365)." days"));
+}
+
 function fixture_store_name() {
     return Mage::app()->getStore()->getName();
 }
@@ -529,7 +533,7 @@ function _category_id($level) {
     $sqlst  = "select entity_id from catalog_category_entity where level in ($level) order by rand() limit 1";
     $res    = mysql_query($sqlst);
     if(!$res) {
-        throw new Exception("Couldn't find a product");
+        throw new Exception("Couldn't find a category of levels: $level.");
     }
 
     $row    = mysql_fetch_array($res);
@@ -546,6 +550,18 @@ function fixture_root_category() {
 
 function fixture_toplevel_category() {
     return _category_id("2");
+}
+
+function fixture_event_category() {
+    $sqlst  = "select entity_id from catalog_category_entity where level in (2,3) and entity_id not in (select category_id from enterprise_catalogevent_event) order by rand() limit 1";
+    $res    = mysql_query($sqlst);
+    if(!$res) {
+        throw new Exception("Couldn't find a category without an event.");
+    }
+
+    $row    = mysql_fetch_array($res);
+    return $row['entity_id'];
+
 }
 
 function fixture_child_level($entry) {
@@ -579,6 +595,14 @@ function post_process_category($entry, $context, $entity) {
 
     $sqlst  = "update catalog_category_entity set level = {$entry['level']}, parent_id = {$entry['parent_id']}, path = '$path' where entity_id = ".$entity->getId();
     mysql_query($sqlst);
+}
+
+function process_catalogevent($entry, $context, $entity) {
+    if(strtotime($entry['date_start']) < strtotime($entry['date_end'])) {
+        $end = $entry['date_end'];
+        $entry['date_end'] = $entry['date_start'];
+        $entry['date_start'] = $end;
+    }
 }
 
 function putdocs() {

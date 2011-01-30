@@ -1,0 +1,36 @@
+# generates randomized categories
+#
+# Display State (countdown timer):
+# 0 - Nowhere
+# 1 - Category Page
+# 2 - Product Page
+# 3 - Both
+#
+
+catalog_events:
+  entity: enterprise_catalogevent/event
+  entity_type: catalogevent
+  base: &event_base
+    category_id: fixture_event_category
+    date_start: ~
+    date_end: ~
+    display_state: 0
+    sort_order: ~
+    iterate: 1
+
+  entries:
+    past_events:
+      <<: *event_base
+      date_start: fixture_past_date
+      date_end: fixture_past_date
+      iterate: numeric_prompt
+    current_events:
+      <<: *event_base
+      date_start: fixture_past_date
+      date_end: fixture_future_date
+      iterate: numeric_prompt
+    future_events:
+      <<: *event_base
+      date_start: fixture_future_date
+      date_end: fixture_future_date
+      iterate: numeric_prompt
