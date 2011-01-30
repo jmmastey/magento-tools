@@ -65,6 +65,12 @@ if(user_yesno("Purge newsletter data?")) {
     print "\n";
 }
 
+if(user_yesno("Purge catalog data?")) {
+    $purges[]   = "Catalog data";
+    $sqlsts[]   = "delete from catalog_product_entity";
+    $sqlsts[]   = "delete from catalog_category_entity where level > 1";
+}
+
 if(user_yesno("Purge search data?")) {
     $purges[]   = "Catalog search data";
     $sqlsts[]   = "delete from catalogsearch_query";
@@ -96,6 +102,7 @@ if(!user_yesno("Delete data from the database?")) {
 start_db_transaction();
 try {
     foreach($sqlsts as $sqlst) {
+        print "$sqlst\n";
         $res = mysql_query($sqlst);
         if(!$res) { throw new Exception(mysql_error()); }
     }

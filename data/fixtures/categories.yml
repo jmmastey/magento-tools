@@ -1,0 +1,56 @@
+# generates randomized categories
+#
+# Display Mode:
+#   PRODUCTS
+#   PAGE
+#   PRODUCTS_AND_PAGE
+#
+
+categories:
+  entity: catalog/category
+  entity_type: category
+  base: &category_base
+    parent_id: fixture_category_id
+    all_children: ~
+    available_sort_by: ~
+    attribute_set_id: 3
+    children: ~
+    children_count: 0
+    custom_design: ~
+    custom_design_apply: ~
+    custom_design_from: ~
+    custom_design_to: ~
+    custom_layout_update: ~
+    custom_use_parent_settings: 1
+    default_sort_by: ~
+    description: ~
+    display_mode: 'PRODUCTS'
+    image: ~
+    include_in_menu: 1
+    is_active: 1
+    is_anchor: 0
+    landing_page: ~
+    level: fixture_child_level
+    meta_description: ~
+    meta_keywords: ~
+    meta_title: ~
+    name: fixture_capsed_string
+    page_layout: ~
+    path: ~
+    path_in_store: ~
+    position: fixture_next_child_position
+    url_key: fixture_url_key
+    url_path: fixture_url_path
+    iterate: 1
+
+  entries:
+    toplevel:
+      <<: *category_base
+      level: 2
+      parent_id: fixture_root_category
+      iterate: numeric_prompt
+    children:
+      <<: *category_base
+      level: 3
+      parent_id: fixture_toplevel_category
+      iterate: numeric_prompt

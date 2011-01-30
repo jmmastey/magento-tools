@@ -57,7 +57,6 @@ anon
 ante
 anti
 ants
-anus
 aped
 apes
 apex
@@ -334,7 +333,6 @@ coal
 coat
 coax
 cobs
-cock
 coda
 code
 cods
@@ -380,7 +378,6 @@ cozy
 crab
 crag
 cram
-crap
 craw
 crew
 crib
@@ -397,7 +394,6 @@ cuff
 cull
 cult
 cums
-cunt
 cups
 curb
 curd
@@ -418,13 +414,11 @@ daft
 dais
 dale
 dame
-damn
 damp
 dams
 dank
 dare
 dark
-darn
 dart
 dash
 data
@@ -457,7 +451,6 @@ desk
 dewy
 dial
 dice
-dick
 died
 dies
 diet
@@ -718,7 +711,6 @@ fret
 friz
 frog
 from
-fuck
 fuel
 full
 fume
@@ -890,7 +882,6 @@ heel
 heft
 heir
 held
-hell
 helm
 help
 hemp
@@ -1531,7 +1522,6 @@ pins
 pint
 pipe
 pips
-piss
 pita
 pith
 pits
@@ -1565,13 +1555,11 @@ pone
 pony
 pooh
 pool
-poop
 poor
 pope
 pops
 pore
 pork
-porn
 port
 pose
 posh
@@ -1816,7 +1804,6 @@ shes
 shim
 shin
 ship
-shit
 shod
 shoe
 shoo
@@ -2060,7 +2047,6 @@ tint
 tiny
 tips
 tire
-tits
 toad
 toed
 toes
