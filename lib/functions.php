@@ -255,3 +255,19 @@ function module_version($company, $module) {
     init_magento();
     return (string)Mage::getConfig()->getNode("modules/{$company}_{$module}/version");
 }
+
+function dump_object($object) {
+    foreach($object->getData() as $key => $value) {
+        if(is_object($value)) {
+            $value = get_class($value);
+        } else if(is_string($value) && strlen($value) > 20) {
+            $value = "string (".strlen($value).") \"".substr($value, 0, 20)."...\"";
+        } else if(is_array($value)) {
+            $value = "array";
+        } else {
+            $value = var_export($value, true);
+        }
+
+        printf("%-40s%s\n", $key, $value);
+    }
+}
