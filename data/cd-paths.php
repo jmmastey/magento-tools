@@ -11,10 +11,10 @@ $cd_paths           = array(
   'local'       	=> '%magento%/app/code/local',
   'community'   	=> '%magento%/app/code/community',
 
-  'design'      	=> '%magento%/app/design/frontend/%edition%/%theme%',
-  'theme'       	=> '%magento%/app/design/frontend/%edition%/%theme%',
-  'template'    	=> '%magento%/app/design/frontend/%edition%/%theme%/template',
-  'layout'      	=> '%magento%/app/design/frontend/%edition%/%theme%/layout',
+  'design'      	=> '%magento%/app/design/frontend/%edition_package%/%theme%',
+  'theme'       	=> '%magento%/app/design/frontend/%edition_package%/%theme%',
+  'template'    	=> '%magento%/app/design/frontend/%edition_package%/%theme%/template',
+  'layout'      	=> '%magento%/app/design/frontend/%edition_package%/%theme%/layout',
   'adminhtml'      	=> '%magento%/app/design/adminhtml/default/default',
 
   'tbase'       	=> '%magento%/app/design/frontend/base/default/template',
