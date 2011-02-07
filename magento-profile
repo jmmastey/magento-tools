@@ -15,13 +15,15 @@
 require_once("lib/base.php");
 require_once("lib/db.php");
 
+$profiles = explode("\n", `ls $support_dir/profiles | grep -v .sql`);
 if($_SERVER['argc'] == 2) {
     $key = $_SERVER['argv'][1];
-}
-
-if(!$key) {
+    if(!isset($profiles[$key])) {
+        print_error("Sorry, '$key' isn't a valid profile. Try again.\n");
+        exit;
+    }
+} else {
     print "\nStore profiles\n";
-    $profiles = explode("\n", `ls $support_dir/profiles | grep -v .sql`);
     foreach($profiles as $profile) {
         printf("%-10s\n", $profile);
     }
