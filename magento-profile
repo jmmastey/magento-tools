@@ -16,10 +16,9 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 
 $profiles = explode("\n", `ls $support_dir/profiles | grep -v .sql`);
-var_dump($profiles);
 if($_SERVER['argc'] == 2) {
     $key = $_SERVER['argv'][1];
-    if(!in_array($new, $profiles)) {
+    if(!in_array($key, $profiles)) {
         print_error("Sorry, '$key' isn't a valid profile. Try again.\n");
         exit;
     }
