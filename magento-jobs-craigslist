@@ -32,7 +32,11 @@ today   = Date.today
 urlbase = 'http://%s.craigslist.org/search/?areaID=11&subAreaID=&query=magento&catAbb=ggg'
 areas   = [ 'newyork', 'chicago', 'sfbay', 'washingtondc.en', 'losangeles', 'houston', 'denver', 'boston', 'austin' ]
 
+results = []
+
 areas.each do |area|
+  puts "Getting #{area}"
+
   doc = Hpricot(open(urlbase % area))
   ((doc.search('blockquote')[1]).search("p")).each do |line|
     vals = line.innerHTML.scan(/(.*) - <a href="([^"]*)">([^<]*)<\/a>.*/)
@@ -42,6 +46,9 @@ areas.each do |area|
     title = vals[0][2]
 
     next if (today - date) > options[:days]
-    print "%8s\t%-60s\t%-10s\t%s\n" % [date.strftime("%m/%d"), link, area, title]
+    results << "%6s\t%-60s\t%-10s\t%s\n" % [date.strftime("%m/%d"), link, area, title]
   end
 end
+
+puts ""
+results.sort.each { |l| puts l }
