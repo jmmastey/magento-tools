@@ -1,0 +1,51 @@
+#!/usr/bin/env php
+<?php
+//
+// Search through CMS content created by the administrator for a string
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php");
+require_once("lib/db.php");
+//init_magento();
+
+switch(count($_SERVER['argv'])) {
+    case 1:
+        print_help();
+        exit;
+    default:
+        $pattern        = $_SERVER['argv'][1];
+        break;
+}
+
+// forget all this fancy stuff, let's do some SQL :)
+$pattern = mysql_real_escape_string($pattern);
+
+// do work
+print_set("select title, identifier from cms_block where content like '%$pattern%'", "CMS Blocks");
+print_set("select title, identifier from cms_page where content like '%$pattern%'", "CMS Pages");
+
+if(0 == strcmp(get_edition(), "enterprise")) {
+    print_set("select name title, '-' identifier from enterprise_banner_content c, enterprise_banner b where c.banner_id = b.banner_id and banner_content like '%$pattern%'", "Banners");
+}
+
+function print_set($sqlst, $title) {
+    $res = mysql_query($sqlst) or die(mysql_error());
+    if(mysql_num_rows($res)) {
+        print "$title\n";
+        while($row = mysql_fetch_array($res)) {
+            printf("  %s (%s)\n", $row['title'], $row['identifier']);
+        }
+        print "\n";
+    }
+}
+
+function putdocs() {
+    return array(
+        "Search through CMS content created by the administrator for a string",
+        "Usage: magento-cms-search PATTERN",
+    );
+}
