@@ -33,6 +33,7 @@ $cd_paths           = array(
 
   'skin'        	=> '%magento%/skin/frontend/%edition_package%/%theme%',
   'css'         	=> '%magento%/skin/frontend/%edition_package%/%theme%/css',
+  'js'         	    => '%magento%/skin/frontend/%edition_package%/%theme%/js',
   'images'      	=> '%magento%/skin/frontend/%edition_package%/%theme%/images',
 
   'locale'      	=> '%magento%/app/locale/en_US',
