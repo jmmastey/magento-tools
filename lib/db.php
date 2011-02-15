@@ -88,3 +88,9 @@ function db_load_file($file_path) {
     $dbname = $db_config_array['dbname'];
     `mysql -u $username --password=$password $dbname < $file_path`;
 }
+
+function db_row($sqlst) {
+    $res = mysql_query($sqlst) or die(mysql_error());
+    if(!mysql_num_rows($res)) { return null; }
+    return mysql_fetch_array($res);
+}

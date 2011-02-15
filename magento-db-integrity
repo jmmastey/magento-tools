@@ -1,0 +1,57 @@
+#!/usr/bin/env php
+<?php
+//
+// Check for data integrity issues in a Magento installation.
+//
+// @author 		Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright	Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php");
+require_once("lib/db.php"); 
+
+print "Order items with no valid product record...";
+$row = db_row("select count(*) ct, min(created_at) mindate, max(created_at) maxdate from sales_flat_order_item where product_id not in (select entity_id from catalog_product_entity)");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows between {$row['mindate']} - {$row['maxdate']}).\n\n"; }
+
+print "Configurable order items without child rows...";
+$row = db_row("select count(*) ct, min(created_at) mindate, max(created_at) maxdate from sales_flat_order_item sfoi where product_type = 'configurable' and not exists (select 1 from sales_flat_order_item where parent_item_id = sfoi.item_id)");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows between {$row['mindate']} - {$row['maxdate']}).\n\n"; }
+
+print "Configurable products w/ wrong simple quantity...";
+$row = db_row("select count(*) ct, min(c.created_at) mindate, max(c.created_at) maxdate from sales_flat_order_item c join sales_flat_order_item s on s.parent_item_id = c.item_id where c.qty_ordered != s.qty_ordered");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows between {$row['mindate']} - {$row['maxdate']}).\n\n"; }
+
+print "Orders with incorrect total quantity ordered...";
+$row = db_row("select count(*) ct, min(sfo.created_at) mindate, max(sfo.created_at) maxdate, sfo.total_qty_ordered, sum(qty_ordered) sum_line_items from sales_flat_order sfo join sales_flat_order_item sfoi on sfoi.order_id = sfo.entity_id where sfoi.parent_item_id is null group by sfo.total_qty_ordered having sum_line_items != total_qty_ordered");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows between {$row['mindate']} - {$row['maxdate']}).\n\n"; }
+
+print "Configurable products without any enabled simples...";
+$row = db_row("select count(*) ct from (select cpec.sku, sum(case when cpi.value = 1 then 1 else 0 end) children, sum(case when cpi.value = 1 then 0 else 1 end) disabled_children from catalog_product_entity cpec left join catalog_product_relation cpr on cpr.parent_id = cpec.entity_id left join catalog_product_entity cpes on cpr.child_id = cpes.entity_id left join catalog_product_entity_int cpi on cpi.entity_id = cpes.entity_id where cpec.type_id = 'configurable' and cpi.attribute_id = 84 group by cpec.sku having children = 0) t");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows).\n\n"; }
+
+print "Sales of 'simple' items for non-simple products...";
+$row = db_row("select count(*) ct from sales_flat_order_item where product_type = 'simple' and product_id in (select entity_id from catalog_product_entity where type_id != 'simple')");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows).\n\n"; }
+
+print "Duplicate SKU on catalog table...";
+$row = db_row("select count(*) ct from (select sfo.entity_id, count(*) items from sales_flat_order sfo left join sales_flat_order_item sfoi on sfoi.order_id = sfo.entity_id group by sfo.entity_id having items = 0) t");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows).\n\n"; }
+
+print "Total item count on order less and sum of items...";
+$row = db_row("select count(*) ct from (select sfo.entity_id, count(*) items from sales_flat_order sfo left join sales_flat_order_item sfoi on sfoi.order_id = sfo.entity_id group by sfo.entity_id having items = 0) t");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows).\n\n"; }
+
+print "Orders with no items...";
+$row = db_row("select count(*) ct, min(created_at) mindate, max(created_at) maxdate from (select sfo.entity_id, sfo.created_at, count(*) items from sales_flat_order sfo left join sales_flat_order_item sfoi on sfoi.order_id = sfo.entity_id group by sfo.entity_id, sfo.created_at having items = 0) t");
+if(!$row['ct']) { print "OK.\n\n"; } else 
+  { print "Found errors ({$row['ct']} rows between {$row['mindate']} - {$row['maxdate']}).\n\n"; }

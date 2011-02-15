@@ -5,6 +5,29 @@ require 'open-uri'
 require 'net/http'
 require 'date'
 require 'zlib'
+require 'optparse'
+
+
+options = {}
+optparse = OptionParser.new(:posix) do |opts|
+  opts.banner = "Check a URL for common performance optimizations. Runs like molasses for now.\nUsage: magento-test-performance [options]"
+
+  opts.on( "-t", "--target=URL", String, "Which site should be checked?" ) do |target|
+    options[:target] = target
+  end
+
+  opts.on( '-h', '--help', 'Display this screen' ) do
+    puts opts
+    exit
+  end
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::ParseError => e
+  puts e
+  exit
+end
 
 def search_for_assets(node, attr)
   assets = []
@@ -49,7 +72,7 @@ end
 
 assets = []
 
-@url = "http://psbrooklyn.com"
+@url = options[:target]
 @base_url = /http(s)?:\/\/[^\/\?]+/.match(@url).to_s
 @dir_url = @url[0..@url.rindex('/')]
 @doc = Hpricot(open(@url))
