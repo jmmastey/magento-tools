@@ -27,7 +27,9 @@ if(!$row['ct']) { print "OK.\n\n"; } else
   { print "Found errors ({$row['ct']} rows between {$row['mindate']} - {$row['maxdate']}).\n\n"; }
 
 print "Orders with incorrect total quantity ordered...";
-$row = db_row("select count(*) ct, min(sfo.created_at) mindate, max(sfo.created_at) maxdate, sfo.total_qty_ordered, sum(qty_ordered) sum_line_items from sales_flat_order sfo join sales_flat_order_item sfoi on sfoi.order_id = sfo.entity_id where sfoi.parent_item_id is null group by sfo.total_qty_ordered having sum_line_items != total_qty_ordered");
+$row = db_row("select count(*) ct, min(created_at) mindate, max(created_at) maxdate from (select sfo.entity_id, sfo.created_at, sfo.total_qty_ordered, sum(qty_ordered) sum_line_items 
+    from sales_flat_order sfo join sales_flat_order_item sfoi on sfoi.order_id = sfo.entity_id where sfoi.parent_item_id is null 
+    group by sfo.entity_id, sfo.created_at, sfo.total_qty_ordered having sum_line_items != total_qty_ordered) t");
 if(!$row['ct']) { print "OK.\n\n"; } else 
   { print "Found errors ({$row['ct']} rows between {$row['mindate']} - {$row['maxdate']}).\n\n"; }
 
