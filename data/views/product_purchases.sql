@@ -16,7 +16,7 @@ select cpe.sku sku, oi.product_type product_type,
   order by sku, dt;
 
 create or replace view product_purchase_omnibus as
-select count(*) entries, cp.sku, oi.product_id, oi.name,
+select count(*) lines, oi.sku, oi.product_id, oi.name,
     sum(cast(qty_ordered-qty_refunded-qty_canceled as decimal)) ordered,
     sum(cast(qty_ordered as decimal)) base_ordered,
     ps.sup_name vendor, oi.product_type,
@@ -37,7 +37,6 @@ select count(*) entries, cp.sku, oi.product_id, oi.name,
     group_concat(distinct ccev.value) event_names
   from sales_flat_order_item oi
     join sales_flat_order o on oi.order_id = o.entity_id
-    left join catalog_product_entity cp on cp.entity_id = oi.product_id
     left join eav_attribute_set ast on ast.attribute_set_id = cp.attribute_set_id
     left join purchase_product_supplier pps on pps.pps_product_id = oi.product_id
     left join purchase_supplier ps on ps.sup_id = pps.pps_supplier_num

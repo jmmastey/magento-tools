@@ -1,24 +1,24 @@
 #!/usr/bin/env php
 <?php
 //
-// Reset passwords of users by email or ID
+// Display some information about a customer.
 //
 // @author      Joseph Mastey <joseph.mastey@gmail.com>
 // @author      $Author$
 // @version     $Id$
 // @copyright   Copyright (c) JRM Ventures LLC, 2010-
 
-require_once("lib/base.php"); 
-require_once("lib/db.php"); 
+require_once("lib/base.php");
+require_once("lib/db.php");
 init_magento();
 
-switch($_SERVER['argc']) {
-  case 2:
-    $user       = $_SERVER['argv'][1];
-    break;
-  default:
-    print_help();
-    break;
+switch(count($_SERVER['argv'])) {
+    case 2:
+        $user = $_SERVER['argv'][1];
+        break;
+    default:
+        print_help();
+        break;
 }
 
 $customer   = Mage::getModel("customer/customer");
@@ -30,13 +30,9 @@ if(is_numeric($user)) {
     $customer = $customer->loadByEmail($user);
 }
 
-$password = "password";
-$customer->changePassword($password);
-print "$user's password is now $password\n";
+print "Customer info for {$customer->getEmail()} (CID {$customer->getId()})\n";
+
 
 function putdocs() {
-    return array(
-        "Reset passwords of users by email address or ID",
-        "Usage: magento-test-reset-password USER",
-    );
+    print_error("Usage: magento-customer CUSTOMER\n");
 }

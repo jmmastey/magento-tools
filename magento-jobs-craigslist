@@ -31,12 +31,16 @@ end
 
 today   = Date.today
 urlbase = 'http://%s.craigslist.org/search/?areaID=11&subAreaID=&query=magento&catAbb=ggg'
-areas   = [ 'newyork', 'chicago', 'sfbay', 'washingtondc.en', 'losangeles', 'houston', 'denver', 'boston', 'austin' ]
+areas   = [ 'newyork', 'chicago', 'sfbay', 'washingtondc.en', 'losangeles',
+            'houston', 'denver', 'boston', 'austin', 'atlanta', 'dallas',
+            'detroit', 'houston', 'lasvegas', 'miami', 'minneapolis',
+            'orangecounty', 'philadelphia', 'phoenix', 'portland', 'raleigh',
+            'sacramento', 'sandiego', 'seattle' ]
 
 results = []
 
 areas.each do |area|
-  puts "Getting #{area}"
+  print "#{area}|"
 
   doc = Hpricot(open(urlbase % area))
   ((doc.search('blockquote')[1]).search("p")).each do |line|
