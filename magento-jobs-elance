@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+require 'rss/1.0'
+require 'rss/2.0'
+require 'date'
+require 'optparse'
+
+
+options = {}
+optparse = OptionParser.new(:posix) do |opts|
+  opts.banner = "Check eLance for jobs relating to Magento.\nUsage: magento-jobs-elance [options]"
+
+  options[:days] = 7
+  opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|
+    options[:days] = days
+  end
+
+  opts.on( '-h', '--help', 'Display this screen' ) do
+    puts opts
+    exit
+  end
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::ParseError => e
+  puts e
+  exit
+end
+
+def parse_tokens(description)
+  tokens = {}
+
+  d_plus_tokens = description.split("<br />")
+  d_plus_tokens.each do |token|
+    token = token.chomp.gsub(/^\n +/, '')
+    next unless token.match /<b>([a-zA-Z ]*):<\/b> (.*)/i
+
+    tok_values = token.scan(/<b>([a-zA-Z ]*):<\/b> (.*)/i)[0]
+    tokens[tok_values[0].downcase.gsub(' ', '_').to_sym] = tok_values[1]
+  end
+
+  tokens
+end
+
+today   = Date.today
+urlbase = 'http://www.elance.com/php/search/main/resultsproject.php?matchType=project&page=&sortBy=timelistedSort&sortOrder=1&matchKeywords=magento&catFilter=100&subcatFilter=&timeleftFilter=0&timelistedFilter=0&budgetFilter=-1&featuredprojectFilter=false&pverifprojectFilter=false&statusFilter=10037&fixedprojectFilter=false&hourlyprojectFilter=false&groupFilter=&inDescrCheck=false&inSkillsCheck=false&inNameCheck=false&t=1300213187492&rss=1'
+
+
+content = ""
+open(urlbase) do |s| content = s.read end
+rss = RSS::Parser.parse(content, false)
+
+rss.items.reverse.each do |item|
+  date = Date.parse(item.pubDate.to_s)
+  next if date+options[:days] < today
+
+  title = item.title.sub(" | Elance Job", "")
+  link = item.link
+  tokens = parse_tokens(item.description)
+  budget = (tokens.has_key? :type_and_budget)?tokens[:type_and_budget].gsub(/(Fixed price |Escrow|Hourly )/, ''):""
+
+  print "%8s\t%-20s\t%-65s\t%s\n" % [date.strftime("%m/%d"), budget, title, link]
+end
