@@ -7,9 +7,10 @@ require 'date'
 require 'optparse'
 require 'json'
 
+
 options = {}
 optparse = OptionParser.new(:posix) do |opts|
-  opts.banner = "Check oDesk for jobs relating to Magento.\nUsage: magento-jobs-odesk [options]"
+  opts.banner = "Check Freelancer for jobs relating to Magento.\nUsage: magento-jobs-freelancer [options]"
 
   options[:days] = 7
   opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|
@@ -39,17 +40,18 @@ def parse_tokens(description)
 
   d_plus_tokens = description.split("<br />")
   d_plus_tokens.each do |token|
-    next unless token.match /<b>([a-z ]*)<\/b>: (.*)/i
+    token = token.chomp.gsub(/^\n +/, '')
+    next unless token.match /<b>([a-zA-Z ]*):<\/b> (.*)/i
 
-    tok_values = token.scan(/<b>([a-z ]*)<\/b>: (.*)/i)[0]
-    tokens[tok_values[0].downcase.to_sym] = tok_values[1]
+    tok_values = token.scan(/<b>([a-zA-Z ]*):<\/b> (.*)/i)[0]
+    tokens[tok_values[0].downcase.gsub(' ', '_').to_sym] = tok_values[1]
   end
 
   tokens
 end
 
 today   = Date.today
-urlbase = 'http://www.odesk.com/jobs/rss?q=magento'
+urlbase = 'http://www.freelancer.com/rss/search.xml?keyword=magento'
 
 content = ""
 open(urlbase) do |s| content = s.read end
@@ -60,16 +62,19 @@ rss.items.reverse.each do |item|
   date = Date.parse(item.pubDate.to_s)
   next if date+options[:days] < today
 
-  title = item.title.sub(" - oDesk", "").encode('utf-8', 'iso-8859-1')
-  link = item.link.gsub(/(jobs\/)[^%]*(%[^?]*)?.*/, '\\1\\2')
-  tokens = parse_tokens(item.description)
-  budget = (tokens.has_key? :budget)?tokens[:budget]:""
+  title = item.title.gsub(/ by \w+$/, "").encode('utf-8', 'iso-8859-1')
+  link = item.link
+  budget = nil
+  match = item.description.match /Budget: ([^,]+)/
+  if match
+    budget = match[1]
+  end
 
-  results << { :date => date.strftime("%m/%d"),  :budget => budget, :title => title, :link => link, :area => '' }
+  results << { :date => date.strftime("%m/%d"), :budget => budget, :title => title, :link => link, :area => '' }
 end
 
 if options[:json]
   puts results.to_json
 else
-  results.each { |r| print "%6s\t%s\t%s\t%s\n" % [r[:date], r[:budget], r[:link], r[:title]] }
+  results.each { |r| print "%6s\t%-18s\t%-65s\t%s\n" % [r[:date], r[:budget], r[:title], r[:link]] }
 end

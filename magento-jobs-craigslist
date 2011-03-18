@@ -5,6 +5,7 @@ require 'hpricot'
 require 'open-uri'
 require 'date'
 require 'optparse'
+require 'json'
 
 
 options = {}
@@ -14,6 +15,11 @@ optparse = OptionParser.new(:posix) do |opts|
   options[:days] = 7
   opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|
     options[:days] = days
+  end
+
+  options[:json] = false
+  opts.on( "-j", "--json", nil, "Output data as JSON" ) do
+    options[:json] = true
   end
 
   opts.on( '-h', '--help', 'Display this screen' ) do
@@ -37,10 +43,12 @@ areas   = [ 'newyork', 'chicago', 'sfbay', 'washingtondc.en', 'losangeles',
             'orangecounty', 'philadelphia', 'phoenix', 'portland', 'raleigh',
             'sacramento', 'sandiego', 'seattle' ]
 
+#areas = [ 'newyork', 'chicago', 'sfbay' ]
+
 results = []
 
 areas.each do |area|
-  print "#{area}|"
+  $stderr.print "#{area}|"
 
   doc = Hpricot(open(urlbase % area))
   ((doc.search('blockquote')[1]).search("p")).each do |line|
@@ -48,12 +56,16 @@ areas.each do |area|
 
     date = Date.parse(vals[0][0])
     link = vals[0][1]
-    title = vals[0][2]
+    title = vals[0][2].encode('utf-8', 'iso-8859-1')
 
     next if (today - date) > options[:days]
-    results << "%6s\t%-60s\t%-10s\t%s\n" % [date.strftime("%m/%d"), link, area, title]
+    results << { :date => date.strftime("%m/%d"), :link => link, :area => area, :title => title, :budget => '' }
   end
 end
 
-puts ""
-results.sort.each { |l| puts l }
+$stderr.puts ""
+if options[:json]
+  puts results.to_json
+else
+  (results.sort { |l,r| l[:date] <=> r[:date] }).each { |r| puts "%6s\t%-60s\t%-10s\t%s\n" % [r[:date], r[:link], r[:area], r[:title]] }
+end

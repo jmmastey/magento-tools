@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
 require 'rss/1.0'
 require 'rss/2.0'
 require 'date'
 require 'optparse'
+require 'json'
 
 
 options = {}
@@ -13,6 +15,11 @@ optparse = OptionParser.new(:posix) do |opts|
   options[:days] = 7
   opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|
     options[:days] = days
+  end
+
+  options[:json] = false
+  opts.on( "-j", "--json", nil, "Output data as JSON" ) do
+    options[:json] = true
   end
 
   opts.on( '-h', '--help', 'Display this screen' ) do
@@ -51,14 +58,21 @@ content = ""
 open(urlbase) do |s| content = s.read end
 rss = RSS::Parser.parse(content, false)
 
+results = []
 rss.items.reverse.each do |item|
   date = Date.parse(item.pubDate.to_s)
   next if date+options[:days] < today
 
-  title = item.title.sub(" | Elance Job", "")
+  title = item.title.sub(" | Elance Job", "").encode('utf-8', 'iso-8859-1')
   link = item.link
   tokens = parse_tokens(item.description)
-  budget = (tokens.has_key? :type_and_budget)?tokens[:type_and_budget].gsub(/(Fixed price |Escrow|Hourly )/, ''):""
+  budget = (tokens.has_key? :type_and_budget)?tokens[:type_and_budget].gsub(/(Fixed price |Escrow|Hourly |\(Rate not sure\))/, ''):""
 
-  print "%8s\t%-20s\t%-65s\t%s\n" % [date.strftime("%m/%d"), budget, title, link]
+  results << { :date => date.strftime("%m/%d"), :budget => budget, :title => title, :link => link, :area => '' }
+end
+
+if options[:json]
+  puts results.to_json
+else
+  results.each { |r| print "%6s\t%-20s\t%-65s\t%s\n" % [r[:date], r[:budget], r[:title], r[:link]] }
 end
