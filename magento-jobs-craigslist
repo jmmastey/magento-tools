@@ -10,7 +10,7 @@ require 'json'
 
 options = {}
 optparse = OptionParser.new(:posix) do |opts|
-  opts.banner = "Check major metro areas on Craigslist for Magento related jobs.\nUsage: magento-craigslist-jobs [options]"
+  opts.banner = "Check major metro areas on Craigslist for Magento related jobs.\nUsage: magento-jobs-craigslist [options]"
 
   options[:days] = 7
   opts.on( "-d N", "--days=N", Integer, "How recent listings must be (default is #{options[:days]})" ) do |days|
