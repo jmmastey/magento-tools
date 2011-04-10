@@ -19,6 +19,7 @@ $vars       = user_action_vars(array("users" => $users, "resources" => $resource
 $actions    = array(
     "l" => array("name" => "List users", "callback" => "list_users"),
     "a" => array("name" => "Add a user", "callback" => "add_user"),
+    "p" => array("name" => "Reset a password", "callback" => "reset_password"),
     "d" => array("name" => "Delete a user", "callback" => "delete_user"),
     "w" => array("name" => "Write changes", "callback" => "write_user_action_changes"),
     "x" => array("name" => "Abandon changes and exit", "callback" => "abandon_user_action_changes"),
@@ -63,7 +64,7 @@ function add_user($vars) {
     $email      = user_text("Enter an email address for this user");
     $username   = user_text("Enter username for this user");
 
-    $password   = user_text("Enter the default password for this user");
+    $password   = user_password("Enter the default password for this user");
     $password   = get_hash($password, 2);
 
     $lognum     = 0;
@@ -82,6 +83,17 @@ function delete_user($vars) {
 
     unset($vars->users[$code]);
     array_push($vars->query_stack, "delete from admin_user where username = '$code'");
+}
+
+function reset_password($vars) {
+    print "\nResetting a password.\n";
+    $code = user_array_choice("Select a user to reset", array_keys($vars->users));
+
+    $password = user_password("Enter a new password for this user");
+    $password = get_hash($password, 2);
+
+    unset($vars->users[$code]);
+    array_push($vars->query_stack, "update admin_user set password = '$password' where username = '$code'");
 }
 
 function putdocs() {

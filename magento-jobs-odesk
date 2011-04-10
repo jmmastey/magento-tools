@@ -6,6 +6,7 @@ require 'rss/2.0'
 require 'date'
 require 'optparse'
 require 'json'
+require 'net/http'
 
 options = {}
 optparse = OptionParser.new(:posix) do |opts|
@@ -49,7 +50,7 @@ def parse_tokens(description)
 end
 
 today   = Date.today
-urlbase = 'http://www.odesk.com/jobs/rss?q=magento'
+urlbase = 'https://www.odesk.com/jobs/rss?q=magento'
 
 content = ""
 open(urlbase) do |s| content = s.read end

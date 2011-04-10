@@ -17,6 +17,36 @@ function user_text($question, $default = null, $match = "/.+/") {
     }
 }
 
+// ask the user for a password value.
+function user_password($question, $default = null, $match = "/.+/") {
+    $default_prompt = strlen($default)?" [$default]":"";
+    while(true) {
+        // turn off echo
+        `stty -echo`;
+        print "$question$default_prompt: ";
+        $result = trim(`head -n1`);
+
+        print "\nRepeat that last entry: ";
+        $confirm = trim(`head -n1`);
+
+        // turn echo back on
+        `stty echo`;
+
+        if($result != $confirm) {
+            print "Your values did not match. Try again.\n";
+            continue;
+        }
+
+        $value = strlen($result)?$result:$default;
+        if(!$match || preg_match($match, $value)) {
+            print "Selected $value\n";
+            return $value;
+        }
+
+        print "Sorry, not a valid answer. Answer should match $match.\n";
+    }
+}
+
 // let the user choose yes or no
 function user_yesno($question) {
     while(true) {
