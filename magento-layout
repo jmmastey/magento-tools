@@ -11,9 +11,9 @@
 require_once("lib/base.php"); // load everything
 init_magento();
 
-switch($_SERVER['argc']) {
+switch($server->argc) {
   case 2:
-    $action = $_SERVER['argv'][1];
+    $action = $server->argv[1];
     break;  
   default:
     $action = user_text("Select a URI to get the layout for", "/");

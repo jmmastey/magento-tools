@@ -12,12 +12,12 @@ require_once("lib/base.php");
 require_once("lib/db.php");
 //init_magento();
 
-switch(count($_SERVER['argv'])) {
+switch(count($server->argv)) {
     case 1:
         print_help();
         exit;
     default:
-        $pattern        = $_SERVER['argv'][1];
+        $pattern        = $server->argv[1];
         break;
 }
 

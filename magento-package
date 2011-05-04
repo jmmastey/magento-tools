@@ -10,7 +10,7 @@
 
 require_once("lib/base.php"); 
 
-if(1 != $_SERVER['argc']) {
+if(1 != $server->argc) {
   print_help();
   exit;
 }

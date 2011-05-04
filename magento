@@ -10,14 +10,14 @@
 
 require_once("lib/base.php"); 
 
-if(2 > $_SERVER['argc']) {
+if(2 > $server->argc) {
     print_help();
 }
 
-$command = $_SERVER['argv'][1];
-array_shift($_SERVER['argv']);
-array_shift($_SERVER['argv']);
-$args = implode(" ", $_SERVER['argv']);
+$command = $server->argv[1];
+array_shift($server->argv);
+array_shift($server->argv);
+$args = implode(" ", $server->argv);
 
 print `magento-$command $args`;
 

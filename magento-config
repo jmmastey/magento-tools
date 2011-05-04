@@ -11,24 +11,24 @@
 require_once("lib/base.php");
 require_once("lib/xml.php");
 
-switch(count($_SERVER['argv'])) {
+switch(count($server->argv)) {
     case 1:
         print_help();
     case 2:
-        $pattern        = $_SERVER['argv'][1];
+        $pattern        = $server->argv[1];
         $module         = null;
         $values         = array();
         break;
     case 3:
-        $pattern        = $_SERVER['argv'][1];
-        $module         = $_SERVER['argv'][2];
+        $pattern        = $server->argv[1];
+        $module         = $server->argv[2];
         $values         = array();
         break;
     default:
-        $pattern        = $_SERVER['argv'][1];
-        $module         = $_SERVER['argv'][2];
-        $args           = $_SERVER['argv'];
-        $values         = parse_opts($_SERVER['argv']);
+        $pattern        = $server->argv[1];
+        $module         = $server->argv[2];
+        $args           = $server->argv;
+        $values         = parse_opts($server->argv);
         break;
 }
 
@@ -38,7 +38,7 @@ if(0 == strcmp("-", $module)) {
 }
 
 try {
-    $pattern            = $_SERVER['argv'][1];
+    $pattern            = $server->argv[1];
     $recipe             = "$support_dir/recipes/$pattern.xml";
     if(!file_exists($recipe)) {
         throw new Exception("The recipe for \"$pattern\" doesn't exist. You'll have to try harder than that.");

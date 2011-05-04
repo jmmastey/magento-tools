@@ -12,13 +12,13 @@
 $use_default_connection = true;
 require_once("lib/db.php");
 
-switch($_SERVER['argc']) {
+switch($server->argc) {
   case 3:
-    $scope    = $_SERVER['argv'][1];
-    $scope_id = $_SERVER['argv'][2];
+    $scope    = $server->argv[1];
+    $scope_id = $server->argv[2];
     break;
   case 2:
-    $scope    = $_SERVER['argv'][1]; 
+    $scope    = $server->argv[1]; 
     $scope_id = "%";
     break;
   default:

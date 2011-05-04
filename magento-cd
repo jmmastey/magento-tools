@@ -19,13 +19,13 @@ try {
     $theme      = trim(`cd $default_path; magento-theme`);
 }
 
-if(2 != $_SERVER['argc']) {
+if(2 != $server->argc) {
   print_error("Usage: magento-cd %somepath%\n");
   print `pwd`;
   exit;
 }
 
-$target     = $_SERVER['argv'][1];
+$target     = $server->argv[1];
 
 // it's a project!
 if(is_array($project_paths) && count($project_paths)) {

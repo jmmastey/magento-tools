@@ -14,7 +14,7 @@ require_once("lib/db.php");
 session_start();
 init_magento();
 
-if(2 > $_SERVER['argc']) {
+if(2 > $server->argc) {
     print_help();
 }
 
@@ -26,8 +26,8 @@ foreach($files as $file) {
 
 // load requested fixtures
 try {
-    for($i = 1; $i < $_SERVER['argc']; $i++) {
-        $fixture = $_SERVER['argv'][$i];
+    for($i = 1; $i < $server->argc; $i++) {
+        $fixture = $server->argv[$i];
         print "loading fixture: $fixture\n";
         load_fixture($fixture);
         print "\n";

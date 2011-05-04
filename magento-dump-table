@@ -11,11 +11,11 @@
 require_once("lib/base.php");
 require_once("lib/db.php");
 
-if(2 != $_SERVER['argc']) {
+if(2 != $server->argc) {
     print_help();
 }
 
-$table  = $_SERVER['argv'][1];
+$table  = $server->argv[1];
 $res    = mysql_query("select * from $table") or die(mysql_error());
 if(!mysql_num_rows($res)) {
     print_error("No rows found. Go away.");

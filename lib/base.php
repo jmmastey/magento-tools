@@ -15,6 +15,10 @@ if(!isset($_SERVER['argc'])) {
     $_SERVER['argv'] = $_GET;
 }
 
+$server = new stdClass();
+$server->argc = $_SERVER['argc'];
+$server->argv = $_SERVER['argv'];
+
 // print something on stderr
 function print_error($str) {
     $fp = fopen("php://stderr", "w+");
@@ -49,8 +53,8 @@ $magento        = find_magento();
 $magento_init   = false;
 
 // helpdoc system
-if(isset($_SERVER['argv'][1])) {
-    $arg = $_SERVER['argv'][1];
+if(isset($server->argv[1])) {
+    $arg = $server->argv[1];
     if(0 == strcmp($arg, "--help") || 0 == strcmp($arg, "-h")) {
         print_help();
     }

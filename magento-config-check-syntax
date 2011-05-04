@@ -12,9 +12,9 @@
 require_once("lib/base.php");
 require_once("lib/xml.php");
 
-switch(count($_SERVER['argv'])) {
+switch(count($server->argv)) {
     case 2:
-        $module         = $_SERVER['argv'][1];
+        $module         = $server->argv[1];
         break;
     default:                                                                                         
         print_help();

@@ -11,12 +11,12 @@
 require_once("lib/base.php"); 
 init_magento();
 
-if(2 != $_SERVER['argc']) {
+if(2 != $server->argc) {
     print_help();
     exit;
 }
 
-$handle = $_SERVER['argv'][1];
+$handle = $server->argv[1];
 $types = array("helper", "model", "block");
 $found = array();
 

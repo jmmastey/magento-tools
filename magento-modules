@@ -11,9 +11,9 @@
 require_once("lib/base.php");
 
 $simple = false;
-if($_SERVER['argc']) {
-    $target_code_pool = $_SERVER['argv'][1];
-    if(3 == $_SERVER['argc']) {
+if($server->argc) {
+    $target_code_pool = $server->argv[1];
+    if(3 == $server->argc) {
         $simple = true;
     }
 }

@@ -12,24 +12,24 @@
 
 require_once("lib/base.php");
 
-switch($_SERVER['argc']) {
+switch($server->argc) {
   case 3:
-    $type       = $_SERVER['argv'][1];
-    $handle     = $_SERVER['argv'][2];
+    $type       = $server->argv[1];
+    $handle     = $server->argv[2];
     $override   = "";
     $template   = "base";
     break;  
   case 4:
-    $type       = $_SERVER['argv'][1];
-    $handle     = $_SERVER['argv'][2];
-    $override   = $_SERVER['argv'][3];    
+    $type       = $server->argv[1];
+    $handle     = $server->argv[2];
+    $override   = $server->argv[3];    
     $template   = "base";
     break;
   case 5:
-    $type       = $_SERVER['argv'][1];
-    $handle     = $_SERVER['argv'][2];
-    $override   = $_SERVER['argv'][3];
-    $template   = $_SERVER['argv'][4];
+    $type       = $server->argv[1];
+    $handle     = $server->argv[2];
+    $override   = $server->argv[3];
+    $template   = $server->argv[4];
     break;
   default:
     print_help();
