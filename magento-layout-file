@@ -40,6 +40,6 @@ if(file_exists("$target/$target_filename")) {
 function putdocs() {
     return array(
         "Create layout file for a module",
-        "Usage: magento-plugin-layout MODULE",
+        "Usage: magento-layout-file MODULE",
     );
 }

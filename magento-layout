@@ -1,0 +1,58 @@
+#!/usr/bin/env php
+<?php
+//
+// Display the layout for an action handle and get details about it
+//
+// @author    Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); // load everything
+init_magento();
+
+switch($_SERVER['argc']) {
+  case 2:
+    $action = $_SERVER['argv'][1];
+    break;  
+  default:
+    $action = user_text("Select a URI to get the layout for", "/");
+    break;
+}
+
+$layout = Mage::app()->getLayout();
+$front = Mage::app()->getFrontController();
+$request = $front->getRequest();
+$request->setRequestUri($action);
+
+
+$request->setPathInfo()->setDispatched(false);
+if (!$request->isStraight()) { Mage::getModel('core/url_rewrite')->rewrite(); }
+$front->rewrite();
+
+$correctRouter = null;
+
+$i = 0;
+while (!$request->isDispatched() && $i++<100) {
+    foreach($front->getRouters() as $router) { if ($router->match($request)) { $correctRouter = $router; break; } }
+}
+if ($i>100) { Mage::throwException('Front controller reached 100 router match iterations'); }
+
+//This event give possibility to launch smth before sending ouptut(Allow cookie setting)
+$root = $layout->getBlock('root');
+putBlock($root, 'root');
+
+
+function putBlock($block, $alias, $offset = "") {
+    printf("$offset%s ( %d | %10s | %s )\n", $alias, count($block->getChild()), $block->getType(), $block->getTemplate());
+    foreach($block->getChild() as $alias => $childBlock) {
+        putBlock($childBlock, $alias, "$offset  ");
+    }
+}
+
+function putdocs() {
+    return array(
+        "Display information about a controller action's layout.",
+        "Usage: magento-layout [ACTION]",
+    );
+}
