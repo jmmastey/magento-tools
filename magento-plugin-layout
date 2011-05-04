@@ -1,0 +1,45 @@
+#!/usr/bin/env php
+<?php
+//
+// Create a layout file for a plugin
+//
+// @author    Joseph Mastey <joseph.mastey@gmail.com>
+// @author    $Author$
+// @version   $Id$
+// @copyright Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); // load everything
+
+switch($_SERVER['argc']) {
+  case 2:
+    $module     = $_SERVER['argv'][1];
+    break;  
+  default:
+    $module     = current_module("local");
+    break;
+}
+
+if("" == $module) {
+    print_help();
+}
+
+print "Adding layout file for $module\n";
+
+$package = trim(`magento-package`);
+$theme = trim(`magento-theme`);
+$target = "$magento/app/design/frontend/$package/$theme/layout";
+$target_filename = strtolower("$module.xml");
+
+if(file_exists("$target/$target_filename")) {
+    print_error("Layout file already exists for $version.");
+    exit;
+}
+
+`cp $support_dir/app/layout.xml $target/$target_filename`;
+
+function putdocs() {
+    return array(
+        "Create layout file for a module",
+        "Usage: magento-plugin-layout MODULE",
+    );
+}

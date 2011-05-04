@@ -54,9 +54,9 @@ try {
             break;
     }
     print "add route:\n";
-    print "magento-plugin-config controller $module --scope=$scope --module={$company}_{$plugin_dir} --use=$use --frontname=$module\n\n";
+    print "magento-config controller $module --scope=$scope --module={$company}_{$plugin_dir} --use=$use --frontname=$module\n\n";
     print "add rewrite:\n";
-    print "magento-plugin-config rewrite $module --module=$module --action=someaction --from_path=path --to_path=path\n";
+    print "magento-config rewrite $module --module=$module --action=someaction --from_path=path --to_path=path\n";
 
 } catch( Exception $e ) {
     print_error("{$e->getMessage()}\n");

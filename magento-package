@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+//
+// Echo the package in use for this edition of magento.
+//
+// @author      Joseph Mastey <joseph.mastey@gmail.com>
+// @author      $Author$
+// @version     $Id$
+// @copyright   Copyright (c) JRM Ventures LLC, 2010-
+
+require_once("lib/base.php"); 
+
+if(1 != $_SERVER['argc']) {
+  print_help();
+  exit;
+}
+
+$edition = get_edition();
+if(0 == strcmp($edition, "community")) {
+    $package = "default";
+} else {
+    $package = $edition;
+}
+
+print "$package\n";
+
+function putdocs() {
+    return array(
+        "Find the package currently in use for the site theme and skin directories.",
+        "Usage: magento-package",
+    );
+}
