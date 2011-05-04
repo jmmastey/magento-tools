@@ -2,6 +2,6 @@ Magento Command Line Tools
 
 Type 'magento-help <command>' for more information on a tool.
 
-All tools are sensitive to a particular magento root, and will read
+Most tools are sensitive to a particular magento root, and will read
 your magento configuration manually.
 

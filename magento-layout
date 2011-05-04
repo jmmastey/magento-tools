@@ -11,14 +11,12 @@
 require_once("lib/base.php"); // load everything
 init_magento();
 
-switch($server->argc) {
-  case 2:
-    $action = $server->argv[1];
-    break;  
-  default:
-    $action = user_text("Select a URI to get the layout for", "/");
-    break;
+if(2 != $server->argc) {
+    print_help();
+    exit;
 }
+
+$action = $server->argv[1];
 
 $layout = Mage::app()->getLayout();
 $front = Mage::app()->getFrontController();
@@ -40,19 +38,35 @@ if ($i>100) { Mage::throwException('Front controller reached 100 router match it
 
 //This event give possibility to launch smth before sending ouptut(Allow cookie setting)
 $root = $layout->getBlock('root');
-putBlock($root, 'root');
+putBlock($root, 'root', "", 0);
 
 
-function putBlock($block, $alias, $offset = "") {
-    printf("$offset%s ( %d | %10s | %s )\n", $alias, count($block->getChild()), $block->getType(), $block->getTemplate());
+function putBlock($block, $alias, $offset = "", $level) {
+
+    $extras = array();
+    $extras[] = count($block->getChild()) ? count($block->getChild()) : "-";
+    $extras[] = $block->getType();
+
+    // what is rendered?
+    if(0 == strcmp($block->getType(), "cms/block")) { $extras[] = $block->getBlockId(); }
+    else if(0 == strcmp($block->getType(), "cms/page")) { $extras[] = $block->getPage()->getIdentifier(); }
+    else if($block->getTemplate()) { $extras[] = $block->getTemplate(); }
+    else { $extras[] = "-"; }
+
+    $extraString = "( ".implode($extras, " | ")." )";
+
+    if($level == 1) { $alias = colorize($alias, C_HI1); }
+
+    echo sprintf("$offset%s %s\n", $alias, colorize($extraString, C_VLO1));
+
     foreach($block->getChild() as $alias => $childBlock) {
-        putBlock($childBlock, $alias, "$offset  ");
+        putBlock($childBlock, $alias, "$offset  ", $level+1);
     }
 }
 
 function putdocs() {
     return array(
         "Display information about a controller action's layout.",
-        "Usage: magento-layout [ACTION]",
+        "Usage: magento-layout ACTION",
     );
 }
