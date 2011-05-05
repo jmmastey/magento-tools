@@ -18,6 +18,8 @@ if(!isset($_SERVER['argc'])) {
 $server = new stdClass();
 $server->argc = $_SERVER['argc'];
 $server->argv = $_SERVER['argv'];
+$server->raw_argc = $_SERVER['argc'];
+$server->raw_argv = $_SERVER['argv'];
 
 // print something on stderr
 function print_error($str) {
@@ -53,6 +55,18 @@ require_once(dirname(__FILE__)."/color.php");
 $magento        = find_magento();
 $magento_init   = false;
 
+// dash-arguments
+$server->dash_args = array();
+foreach($server->argv as $key => $value) {
+    $matches = array();
+    if(preg_match("/^--([a-z_-]+)=(.*)$/", $value, $matches)) {
+        $server->dash_args[$matches[1]] = $matches[2];
+        unset($server->argv[$key]);
+        $server->argc -= 1;
+    }
+
+}
+
 // helpdoc system
 if(isset($server->argv[1])) {
     $arg = $server->argv[1];
@@ -85,4 +99,11 @@ function find_magento() {
     }
 
     throw new Exception("There is no Magento to be found. My hands are tied!");
+}
+
+// get a value that normally would be prompted for, but that
+// the user specified on the command line, as in --foo="bar baz"
+function cmd_switch($name) {
+    global $server;
+    return isset($server->dash_args[$name]) ? $server->dash_args[$name] : null;
 }

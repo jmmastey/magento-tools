@@ -12,6 +12,8 @@
 
 require_once("lib/base.php"); // load everything
 
+var_dump($server->argv);
+
 switch($server->argc) {
   case 2:
     $handle     = $server->argv[1];

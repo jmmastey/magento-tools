@@ -59,27 +59,46 @@ function get_filter_values( $source, &$values ) {
 // specific filters called for required values
 
 function filter_value( $filter_key, &$values, $default = null ) {
-    $values[$filter_key] = user_text("Enter a value for $filter_key", $default);
+    $values[$filter_key] = cmd_switch($filter_key);
+    if(!$values[$filter_key]) {
+        $values[$filter_key] = user_text("Enter a value for $filter_key", $default);
+    }
 }
 
 function filter_classtype( &$values, $default = null ) {
-    $values['classtype'] = user_array_choice("Select a class type", array("block", "model"), $default);
+    $values['classtype'] = cmd_switch('classtype');
+    if(!$values['classtype']) {
+        $values['classtype'] = user_array_choice("Select a class type", array("block", "model"), $default);
+    }
 }
 
 function filter_rewrite_module_lower( &$values ) {
     $default = current_module();
-    $module = user_module_path("Select a module to override", $default);
-    list($codepool, $company, $module) = explode("/", $module);
+    if(cmd_switch('rewrite_module')) {
+        $values['rewrite_module'] = cmd_switch('rewrite_module');
+        $values['rewrite_module_lower'] = strtolower($module);
+    } else {
+        $module = user_module_path("Select a module to override", $default);
+        list($codepool, $company, $module) = explode("/", $module);
 
-    $values['rewrite_module'] = $module;
-    $values['rewrite_module_lower'] = strtolower($module);
+        $values['rewrite_module'] = $module;
+        $values['rewrite_module_lower'] = strtolower($module);
+    }
 }
 
 function filter_rewrite_handle( &$values, $default ) {
-    $values['rewrite_handle'] = user_text("Select class handle to override (class only, no module)", $default);
+    if(cmd_switch('rewrite_handle')) {
+        $values['rewrite_handle'] = cmd_switch('rewrite_handle');
+    } else {
+        $values['rewrite_handle'] = user_text("Select class handle to override (class only, no module)", $default);
+    }
 }
 
 function filter_rewrite_class( &$values, $default ) {
-    $class = user_text("Select class to override to", $default);
-    $values['rewrite_class'] = $class;
+    if(cmd_switch('rewrite_handle')) {
+        $values['rewrite_class'] = cmd_switch('rewrite_handle');
+    } else {
+        $class = user_text("Select class to override to", $default);
+        $values['rewrite_class'] = $class;
+    }
 } 

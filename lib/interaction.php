@@ -1,5 +1,7 @@
 <?php
 
+require_once("base.php");
+
 // ask the user for a configuration value.
 function user_text($question, $default = null, $match = "/.+/") {
     $default_prompt = strlen($default)?" [$default]":"";
@@ -107,9 +109,18 @@ function get_file_substitution_values($handle, $type, $author, $override) {
     $subs['filename']     = handle_to_file( $handle, $type );
     $subs['output_file']  = "{$subs['dir']}/{$subs['filename']}";
     $subs['package']      = $company;
-    $subs['description']  = user_text("Enter a description for the file");
+
+    $subs['description']  = cmd_switch("description");
+    if(!$subs['description']) {
+        $subs['description']  = user_text("Enter a description for the file");
+    }
+
     $subs['plugin']       = $plugin_dir;
-    $subs['author']       = user_text("Who is the author of the plugin", $author);
+
+    $subs['author']  = cmd_switch("author");
+    if(!$subs['author']) {
+        $subs['author']       = user_text("Who is the author of the plugin", $author);
+    }
     $subs['copyright']    = date("Y")." ".$subs['author'];
 
     if(file_exists($subs['output_file'])) { throw new Exception("Class already exists, so I can't create it again, amirite?"); }
@@ -119,6 +130,17 @@ function get_file_substitution_values($handle, $type, $author, $override) {
     if($override) { $subs['extends'] = " extends $override"; }
 
     return $subs;
+}
+
+// turn a key -> value array into a set of switches to append to a commandline command
+function array_to_switches($arr) {
+    $str = "";
+    foreach($arr as $key => $value) {
+        $value = str_replace("'", "", $value);
+        $str .= " --$key='$value'";
+    }
+
+    return $str;
 }
 
 // verify a set of values
